@@ -220,4 +220,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ea3b63655054ad48be08c8f5e3e651b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _cardData: {fileID: 11400000, guid: 80414b5da71fee14fba059750e5019b0, type: 2}
+  _frontRenderer: {fileID: 8700070258728588457}
+  _backRenderer: {fileID: 7422926718285000276}

@@ -1,0 +1,24 @@
+using UnityEngine;
+
+public class GameStateMachine
+{
+    public GameStateBase CurrentGameState { get; private set; }
+    
+    private GameStateFactory _gameStateFactory = new GameStateFactory();
+
+    public void Init()
+    {
+        ChangeState(GameState.GameStart);
+    }
+    public void ChangeState(GameState newState)
+    {
+        CurrentGameState?.Exit();
+        CurrentGameState = _gameStateFactory.CreateGameState(newState);
+        CurrentGameState.Enter();
+    }
+    public void StateUpdate()
+    {
+        CurrentGameState.Update();
+    }
+
+}
