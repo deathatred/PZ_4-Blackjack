@@ -17,6 +17,8 @@ public class Card : MonoBehaviour
     }
     public async UniTask DrawFromDeck(Vector3 targetPosition, bool flip = true, float duration = 1f, float rotationsPerSecond = 2f)
     {
+        int highSortOrder = 100;
+        SetSortingOrder(highSortOrder);
         var originalRotation = transform.rotation;
 
         var moveTween = transform.DOMove(targetPosition, duration).SetEase(Ease.OutQuad);
@@ -41,8 +43,9 @@ public class Card : MonoBehaviour
             await transform.DORotateQuaternion(flipRotation, 0.25f).SetEase(Ease.Linear).AsyncWaitForCompletion().AsUniTask();
         }
     }
-    public async UniTask Move(Vector3 targetPosition, float duration = 0.25f)
+    public async UniTask Move(Vector3 targetPosition, int sortingOrder, float duration = 0.25f)
     {
+        SetSortingOrder(sortingOrder);
         var moveTween = transform.DOMove(targetPosition, duration).SetEase(Ease.OutQuad);
         await moveTween.AsyncWaitForCompletion().AsUniTask();
     }
@@ -54,5 +57,10 @@ public class Card : MonoBehaviour
     {
         string result = $"{_data.CardSuit.ToString()}, {_data.CardRank.ToString()} ";
         return result;
+    }
+    private void SetSortingOrder(int sortingOrder)
+    {
+        _frontRenderer.sortingOrder = sortingOrder;
+        _backRenderer.sortingOrder = sortingOrder;
     }
 }

@@ -23,14 +23,10 @@ public class PlayerController : MonoBehaviour
     private void UpdateHandLayout()
     {
         List<Vector3> positions = LayoutManager.GetLinearLayout(_currentCards.Count, spacing);
-        float yOffset = 0f;
         for (int i = 0; i < _currentCards.Count; i++)
         {
-            Vector3 offset = new Vector3(handAnchor.position.x, handAnchor.position.y + yOffset, handAnchor.position.z);
-            Vector3 targetPos = offset + positions[i];
-            yOffset += 0.1f;
-            _currentCards[i].Move(targetPos).Forget();
-           
+            Vector3 targetPos = handAnchor.position + positions[i];
+            _currentCards[i].Move(targetPos,i).Forget(); 
         }
     }
     public int CalculateScore()
