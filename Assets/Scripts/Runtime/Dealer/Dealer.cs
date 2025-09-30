@@ -1,32 +1,75 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
+using Cysharp.Threading.Tasks;
 
 public class Dealer : MonoBehaviour
 {
-    private List<Card> _currentCards = new List<Card>();
+    public Hand Hand { get; private set; } = new Hand();
+    [SerializeField] private Transform handAnchor;
+    private float spacing = 2f;
     [Inject] private DeckManager _deckManager;
-    public void TakeCard()
+
+    public void OnEnable()
     {
-        _currentCards.Add(_deckManager.DrawCard());
-        print(_currentCards[_currentCards.Count - 1].GetName());
+        EventBus.Subscribe<DealingStartedEvent>(FirstTurn);
+        EventBus.Subscribe<DealerTurnStartedEvent>(StartDealerTurn);
     }
-    public int CalculateScore()
+    private void OnDisable()
     {
-        int score = 0;
-        int aces = 0;
-
-        foreach (var card in _currentCards)
+        EventBus.Unsubscribe<DealingStartedEvent>(FirstTurn);
+        EventBus.Unsubscribe<DealerTurnStartedEvent>(StartDealerTurn);
+    }
+    public void FirstTurn(DealingStartedEvent e)
+    {
+        TakeFirstTurnAsync().Forget();
+    }
+    public async UniTask TakeFirstTurnAsync()
+    {
+        for (int i = 0; i < 2; i++)
         {
-            score += card.GetValue();
-            if (card.GetValue() == 11) aces++;
+            Card card = _deckManager.DrawCard();
+            Hand.AddCard(card);
+            if (i == 1)
+            {
+                await card.DrawFromDeck(handAnchor.position, false);
+            }
+            else
+            {
+                await card.DrawFromDeck(handAnchor.position);
+            }
+                Hand.UpdateHandLayout(handAnchor, spacing);
         }
-        while (score > 21 && aces > 0)
+    }
+    public async UniTask DrawCardAsync()
+    {
+        if (Hand.CalculateScore() < 17)
         {
-            score -= 10;
-            aces--;
+            Card card = _deckManager.DrawCard();
+            Hand.AddCard(card);
+            await card.DrawFromDeck(handAnchor.position);
+            Hand.UpdateHandLayout(handAnchor, spacing);
         }
-
-        return score;
+    }
+    private void StartDealerTurn(GameEventBase e)
+    {
+        DealerTurn().Forget();
+    }
+    private async UniTask DealerTurn()
+    {
+        await Hand.GetCards()[1].Flip();
+        while (Hand.CalculateScore() < 17)
+        {
+           await DrawCardAsync();
+        }
+        if (Hand.CalculateScore() > 17 && Hand.CalculateScore() <= 21)
+        {
+            EventBus.Publish(new DealerTurnEndedEvent());
+        }
+        else
+        {
+            print("dealer lost, player wins ");
+            //dealer lost, player wins  
+        }
     }
 }

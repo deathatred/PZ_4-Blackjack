@@ -5,46 +5,70 @@ using Zenject;
 
 public class PlayerController : MonoBehaviour
 {
+    public Hand Hand { get; private set; } = new Hand();
     [SerializeField] private Transform handAnchor;
-     private float spacing = 2f;
-
-    private List<Card> _currentCards = new List<Card>();
-
+    private float spacing = 2f;
     [Inject] private DeckManager _deckManager;
 
-    public async UniTask TakeCard()
+    private void OnEnable()
+    {
+        SubscribeToEvents();
+    }
+    private void OnDisable()
+    {
+        UnsubscribeFromEvents();
+    }
+    private async UniTask TakeFirstTurnAsync()
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            await TakeCardAsync();
+        }
+        if (Hand.CalculateScore() == 21) 
+        {
+            EventBus.Publish(new PlayerBlackjackEvent());
+        }
+        else
+        {
+            EventBus.Publish(new DealingFinishedEvent());
+        }
+    }
+    private async UniTask TakeCardAsync()
     {
         Card card = _deckManager.DrawCard();
-        _currentCards.Add(card);
+        Hand.AddCard(card);
         await card.DrawFromDeck(handAnchor.position);
-        UpdateHandLayout();
-        print(_currentCards[_currentCards.Count - 1].GetName());
+        Hand.UpdateHandLayout(handAnchor, spacing);
     }
-    private void UpdateHandLayout()
+    private async UniTask TakeCardTurn()
     {
-        List<Vector3> positions = LayoutManager.GetLinearLayout(_currentCards.Count, spacing);
-        for (int i = 0; i < _currentCards.Count; i++)
+        await TakeCardAsync();
+        if (Hand.CalculateScore() == 21)
         {
-            Vector3 targetPos = handAnchor.position + positions[i];
-            _currentCards[i].Move(targetPos,i).Forget(); 
+            EventBus.Publish(new PlayerBlackjackEvent());
+        }
+        if (Hand.CalculateScore() > 21)
+        {
+            print("Player lost");
+            EventBus.Publish(new DealerWinEvent());
         }
     }
-    public int CalculateScore()
+    private void SubscribeToEvents()
     {
-        int score = 0;
-        int aces = 0;
-
-        foreach (var card in _currentCards)
-        {
-            score += card.GetValue();
-            if (card.GetValue() == 11) aces++;
-        }
-        while (score > 21 && aces > 0)
-        {
-            score -= 10;
-            aces--;
-        }
-
-        return score;
+        EventBus.Subscribe<DealingStartedEvent>(FirstTurn);
+        EventBus.Subscribe<TakeButtonPressedEvent>(TakeTurn);
+    }
+    private void UnsubscribeFromEvents()
+    {
+        EventBus.Unsubscribe<DealingStartedEvent>(FirstTurn);
+        EventBus.Unsubscribe<TakeButtonPressedEvent>(TakeTurn);
+    }
+    private void FirstTurn(DealingStartedEvent e)
+    {
+        TakeFirstTurnAsync().Forget();
+    }
+    private void TakeTurn(TakeButtonPressedEvent e)
+    {
+        TakeCardTurn().Forget();
     }
 }

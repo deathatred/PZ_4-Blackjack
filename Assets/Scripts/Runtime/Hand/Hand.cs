@@ -1,0 +1,42 @@
+using NUnit.Framework;
+using System.Collections.Generic;
+using UnityEngine;
+using Cysharp.Threading.Tasks;
+
+public class Hand
+{
+    public List<Card> _cards = new();
+
+    public void AddCard(Card card)
+    {
+        _cards.Add(card);
+    }
+    public int CalculateScore()
+    {
+        int score = 0;
+        int aces = 0;
+
+        foreach (var card in _cards)
+        {
+            score += card.GetValue();
+            if (card.GetValue() == 11) aces++;
+        }
+        while (score > 21 && aces > 0)
+        {
+            score -= 10;
+            aces--;
+        }
+
+        return score;
+    }
+    public void UpdateHandLayout(Transform handAnchor,float spacing)
+    {
+        List<Vector3> positions = LayoutManager.GetLinearLayout(_cards.Count, spacing);
+        for (int i = 0; i < _cards.Count; i++)
+        {
+            Vector3 targetPos = handAnchor.position + positions[i];
+            _cards[i].Move(targetPos, i).Forget();
+        }
+    }
+    public IReadOnlyList<Card> GetCards() => _cards;
+}

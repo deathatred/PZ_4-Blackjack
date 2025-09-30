@@ -1,25 +1,36 @@
 using UnityEngine;
+using Zenject;
+using Zenject.Asteroids;
 
 public class GameStateFactory 
 {
+    private readonly DiContainer _container;
+    public GameStateFactory(DiContainer container)
+    {
+        _container = container;
+    }
+    public T CreateState<T>() where T : GameStateBase
+    {
+        return _container.Instantiate<T>();
+    }
     public GameStateBase CreateGameState(GameState gameState)
     {
         switch (gameState)
         {
             case GameState.GameStart:
-                return new GameStartState();
+                return CreateState<GameStartState>();
             case GameState.Dealing:
-                return new DealingState();
+                return CreateState<DealingState>();
             case GameState.PlayerTurn:
-                return new PlayerTurnState();
+                return CreateState<PlayerTurnState>();
             case GameState.DealerTurn:
-                return new DealerTurnState();
+                return CreateState<DealerTurnState>();
             case GameState.ComparingHands:
-                return new ComparingHandsState();
+                return CreateState<ComparingHandsState>();
             case GameState.PlayerWin:
-                return new PlayerWinState();
+                return CreateState<PlayerWinState>();
             case GameState.DealerWin:
-                return new DealerWinState();
+                return CreateState<DealerWinState>();
             case GameState.GameOver:
                 return null;
         }

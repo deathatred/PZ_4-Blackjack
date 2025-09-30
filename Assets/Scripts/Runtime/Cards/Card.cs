@@ -49,6 +49,11 @@ public class Card : MonoBehaviour
         var moveTween = transform.DOMove(targetPosition, duration).SetEase(Ease.OutQuad);
         await moveTween.AsyncWaitForCompletion().AsUniTask();
     }
+    public async UniTask Flip()
+    {
+        var flipRotation = Quaternion.Euler(90f, 180f, -180);
+        await transform.DORotateQuaternion(flipRotation, 0.25f).SetEase(Ease.Linear).AsyncWaitForCompletion().AsUniTask();
+    }
     public int GetValue()
     {
         return _data.CardValue;

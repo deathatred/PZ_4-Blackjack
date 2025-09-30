@@ -1,13 +1,20 @@
 using UnityEngine;
+using Zenject;
 
 public class GameStateMachine
 {
     public GameStateBase CurrentGameState { get; private set; }
     
-    private GameStateFactory _gameStateFactory = new GameStateFactory();
+    private GameStateFactory _gameStateFactory;
 
+    [Inject]
+    public GameStateMachine(GameStateFactory stateFactory)
+    {
+        _gameStateFactory = stateFactory;
+    }
     public void Init()
     {
+
         ChangeState(GameState.GameStart);
     }
     public void ChangeState(GameState newState)

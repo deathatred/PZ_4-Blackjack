@@ -1,19 +1,43 @@
 using UnityEngine;
+using Zenject;
 
 public class DealingState : GameStateBase
 {
+    private bool _dealingFinished = false;
+    private bool _playerBlackjack = false;
+
+    [Inject]
+    public DealingState(GameStateMachine fsm) : base(fsm)
+    {
+    }
     public override void Enter()
     {
-        throw new System.NotImplementedException();
+        EventBus.Publish(new DealingStartedEvent());
+        EventBus.Subscribe<DealingFinishedEvent>(DealingFinished);
+        EventBus.Subscribe<PlayerBlackjackEvent>(PlayerBlackjack);
     }
-
     public override void Exit()
     {
-        throw new System.NotImplementedException();
-    }
 
+    }
     public override void Update()
     {
-        throw new System.NotImplementedException();
+        if (_playerBlackjack)
+        {
+            _fsm.ChangeState(GameState.DealerTurn);
+        }
+        if (_dealingFinished)
+        {
+            _fsm.ChangeState(GameState.PlayerTurn);
+        }
+       
+    }
+    private void PlayerBlackjack(GameEventBase e)
+    {
+        _playerBlackjack = true;
+    }
+    private void DealingFinished(GameEventBase e)
+    {
+        _dealingFinished = true;
     }
 }

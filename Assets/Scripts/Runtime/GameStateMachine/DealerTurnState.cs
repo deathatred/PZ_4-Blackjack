@@ -1,19 +1,34 @@
 using UnityEngine;
+using Zenject;
 
 public class DealerTurnState : GameStateBase
 {
+    private bool _dealerTurnEnded = false;
+    [Inject]
+    public DealerTurnState(GameStateMachine fsm) : base(fsm)
+    {
+    }
+
     public override void Enter()
     {
-        throw new System.NotImplementedException();
+        EventBus.Publish(new DealerTurnStartedEvent());
+        EventBus.Subscribe<DealerTurnEndedEvent>(EndDealerTurn);
     }
 
     public override void Exit()
     {
-        throw new System.NotImplementedException();
+
     }
 
     public override void Update()
     {
-        throw new System.NotImplementedException();
+        if (_dealerTurnEnded)
+        {
+            _fsm.ChangeState(GameState.ComparingHands);
+        }
+    }
+    private void EndDealerTurn(DealerTurnEndedEvent e)
+    {
+        _dealerTurnEnded = true;
     }
 }
