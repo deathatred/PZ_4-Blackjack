@@ -7,6 +7,7 @@ public enum GameState
     PlayerTurn,    
     DealerTurn,     
     ComparingHands, 
+    ResetingTable,
     PlayerWin,    
     DealerWin,              
     GameOver

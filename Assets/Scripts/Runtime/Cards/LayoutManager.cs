@@ -7,10 +7,10 @@ public static class LayoutManager
     {
         List<Vector3> layout = new List<Vector3>();
         float newSpacing = 0;
-        if (cardCount > 6)
+        if (cardCount > 4)
         {
             newSpacing = spacing / 1.5f;
-            if (cardCount > 8)
+            if (cardCount > 6)
             {
                 newSpacing = spacing / 2f;
             }

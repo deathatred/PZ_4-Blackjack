@@ -5,11 +5,20 @@ using Cysharp.Threading.Tasks;
 
 public class Hand
 {
-    public List<Card> _cards = new();
+    private List<Card> _cards = new();
 
+    private DeckManager _deckManager;
+    public Hand(DeckManager deckManager)
+    {
+        _deckManager = deckManager;
+    }
     public void AddCard(Card card)
     {
         _cards.Add(card);
+    }
+    public void RemoveCard(Card card)
+    {
+        _cards.Remove(card);
     }
     public int CalculateScore()
     {
@@ -37,6 +46,15 @@ public class Hand
             Vector3 targetPos = handAnchor.position + positions[i];
             _cards[i].Move(targetPos, i).Forget();
         }
+    }
+    public void ReturnCards(GameEventBase e)
+    {
+        foreach (var card in GetCards())
+        {
+            card.ReturnToDeck().Forget();
+            _deckManager.ReturnCard(card);
+        }
+        _cards.Clear();
     }
     public IReadOnlyList<Card> GetCards() => _cards;
 }

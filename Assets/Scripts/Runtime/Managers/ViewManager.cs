@@ -4,7 +4,12 @@ using Zenject;
 
 public class ViewManager
 {
+    private const int GAME_VIEW_ID = 0;
+    private const int GAME_END_VIEW_ID = 1;
+    private const int MENU_VIEW_ID = 2;
+
     private readonly List<Canvas> _views = new();
+  
     public ViewManager(List<Canvas> canvases)
     {
         _views = canvases;

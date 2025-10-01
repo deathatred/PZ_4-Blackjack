@@ -24,6 +24,10 @@ public class GameManager : MonoBehaviour
         print(_gameStateMachine.CurrentGameState);
         _gameStateMachine.StateUpdate();
     }
+    private void OnDestroy()
+    {
+       _deckManager.Dispose();
+    }
     private void InitSingleton()
     {
         if (Instance == null)

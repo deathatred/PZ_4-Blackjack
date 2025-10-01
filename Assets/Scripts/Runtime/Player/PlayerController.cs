@@ -5,10 +5,18 @@ using Zenject;
 
 public class PlayerController : MonoBehaviour
 {
-    public Hand Hand { get; private set; } = new Hand();
+    
     [SerializeField] private Transform handAnchor;
     private float spacing = 2f;
-    [Inject] private DeckManager _deckManager;
+    private DeckManager _deckManager;
+    public Hand Hand { get; private set; }
+
+    [Inject]
+    public void Construct(DeckManager deck)
+    {
+        _deckManager = deck;
+        Hand= new Hand(_deckManager);
+    }
 
     private void OnEnable()
     {
@@ -36,9 +44,12 @@ public class PlayerController : MonoBehaviour
     private async UniTask TakeCardAsync()
     {
         Card card = _deckManager.DrawCard();
+        if (card == null) { Debug.Log(_deckManager.GetDeckCount() + "count"); return; }
+        EventBus.Publish(new DealingCardsToPlayerStartedEvent());
         Hand.AddCard(card);
         await card.DrawFromDeck(handAnchor.position);
         Hand.UpdateHandLayout(handAnchor, spacing);
+        EventBus.Publish(new DealingCardsToPlayerEndedEvent());
     }
     private async UniTask TakeCardTurn()
     {
@@ -57,12 +68,15 @@ public class PlayerController : MonoBehaviour
     {
         EventBus.Subscribe<DealingStartedEvent>(FirstTurn);
         EventBus.Subscribe<TakeButtonPressedEvent>(TakeTurn);
+        EventBus.Subscribe<EnteredResetStateEvent>(Hand.ReturnCards);
     }
     private void UnsubscribeFromEvents()
     {
         EventBus.Unsubscribe<DealingStartedEvent>(FirstTurn);
         EventBus.Unsubscribe<TakeButtonPressedEvent>(TakeTurn);
+        EventBus.Unsubscribe<EnteredResetStateEvent>(Hand.ReturnCards);
     }
+  
     private void FirstTurn(DealingStartedEvent e)
     {
         TakeFirstTurnAsync().Forget();

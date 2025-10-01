@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -5,6 +6,9 @@ public class GameViewUI : MonoBehaviour
 {
     [SerializeField] private Button _takeButton;
     [SerializeField] private Button _pushButton;
+    [SerializeField] private TextMeshProUGUI _dealerScoreText;
+    [SerializeField] private TextMeshProUGUI _playerScoreText;
+    [SerializeField] private TextMeshProUGUI _playerMoneyText;
 
     private void OnEnable()
     {
@@ -36,18 +40,20 @@ public class GameViewUI : MonoBehaviour
     {
         EventBus.Subscribe<PlayerTurnStartedEvent>(SetButtonsOn);
         EventBus.Subscribe<PlayerTurnEndedEvent>(SetButtonsOff);
+        EventBus.Subscribe<DealingCardsToPlayerEndedEvent>(SetButtonsOn);
+        EventBus.Subscribe<DealingCardsToPlayerStartedEvent>(SetButtonsOff);
     }
     private void UnsubscribeFromEvents()
     {
         EventBus.Unsubscribe<PlayerTurnStartedEvent>(SetButtonsOn);
         EventBus.Unsubscribe<PlayerTurnEndedEvent>(SetButtonsOff);
     }
-    private void SetButtonsOn(PlayerTurnStartedEvent e)
+    private void SetButtonsOn(GameEventBase e)
     {
         _takeButton.gameObject.SetActive(true);
         _pushButton.gameObject.SetActive(true);
     }
-    private void SetButtonsOff(PlayerTurnEndedEvent e)
+    private void SetButtonsOff(GameEventBase e)
     {
         _takeButton.gameObject.SetActive(false);
         _pushButton.gameObject.SetActive(false);

@@ -1,16 +1,23 @@
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class Card : MonoBehaviour
 {
+    [Inject] private DeckManager _deckManager;
     [SerializeField] private SpriteRenderer _frontRenderer;
     [SerializeField] private SpriteRenderer _backRenderer;
 
+    public bool IsFlipped { get; private set; } = false;
+    private Quaternion _faceDownRotation = Quaternion.Euler(-90f, 0f, -180f);
+    private Quaternion _faceUpRotation = Quaternion.Euler(90f, 180f, -180f);
     private CardDataSO _data;
-    public void Setup(CardDataSO data)
+    public void Setup(CardDataSO data, DeckManager deckManager)
     {
+        _deckManager = deckManager;
         _data = data;
         _frontRenderer.sprite = data.FrontImage;
         _backRenderer.sprite = data.BackImage;
@@ -39,9 +46,20 @@ public class Card : MonoBehaviour
             .AsUniTask();
         if (flip)
         {
-            var flipRotation = Quaternion.Euler(90f, 180f, -180);
-            await transform.DORotateQuaternion(flipRotation, 0.25f).SetEase(Ease.Linear).AsyncWaitForCompletion().AsUniTask();
+            await Flip();
         }
+    }
+    public async UniTask ReturnToDeck(float duration=1f)
+    {
+        await Flip();
+        int highSortOrder = 100;
+        SetSortingOrder(highSortOrder);
+        var originalRotation = transform.rotation;
+        var targetPosition = _deckManager.GetDeckPosition();
+
+        var moveTween = transform.DOMove(targetPosition, duration).SetEase(Ease.OutQuad);
+
+        await moveTween.AsyncWaitForCompletion().AsUniTask();
     }
     public async UniTask Move(Vector3 targetPosition, int sortingOrder, float duration = 0.25f)
     {
@@ -51,8 +69,10 @@ public class Card : MonoBehaviour
     }
     public async UniTask Flip()
     {
-        var flipRotation = Quaternion.Euler(90f, 180f, -180);
-        await transform.DORotateQuaternion(flipRotation, 0.25f).SetEase(Ease.Linear).AsyncWaitForCompletion().AsUniTask();
+        IsFlipped = !IsFlipped;
+
+        Quaternion targetRotation = IsFlipped ? _faceUpRotation : _faceDownRotation;
+        await transform.DORotateQuaternion(targetRotation, 0.25f).SetEase(Ease.Linear).AsyncWaitForCompletion().AsUniTask();
     }
     public int GetValue()
     {

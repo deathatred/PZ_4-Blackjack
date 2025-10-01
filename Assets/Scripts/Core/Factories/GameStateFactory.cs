@@ -23,6 +23,8 @@ public class GameStateFactory
                 return CreateState<DealingState>();
             case GameState.PlayerTurn:
                 return CreateState<PlayerTurnState>();
+            case GameState.ResetingTable:
+                return CreateState<ResetingTableState>();
             case GameState.DealerTurn:
                 return CreateState<DealerTurnState>();
             case GameState.ComparingHands:
