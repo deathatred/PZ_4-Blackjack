@@ -42,10 +42,12 @@ public class Dealer : MonoBehaviour
             if (i == 1)
             {
                 await card.DrawFromDeck(handAnchor.position, false);
+             
             }
             else
             {
                 await card.DrawFromDeck(handAnchor.position);
+                EventBus.Publish(new DealerDrawnCardEvent(Hand.CalculateScore()));
             }
                 Hand.UpdateHandLayout(handAnchor, spacing);
         }
@@ -53,8 +55,9 @@ public class Dealer : MonoBehaviour
     public async UniTask ShowCard()
     {
         if (!Hand.GetCards()[1].IsFlipped)
-        {
+        {  
             await Hand.GetCards()[1].Flip();
+            EventBus.Publish(new DealerDrawnCardEvent(Hand.CalculateScore()));
         }
     }
     public async UniTask DrawCardAsync()
@@ -73,10 +76,11 @@ public class Dealer : MonoBehaviour
     }
     private async UniTask DealerTurn()
     {
-        await Hand.GetCards()[1].Flip();
+        await ShowCard();
         while (Hand.CalculateScore() < 17)
         {
            await DrawCardAsync();
+           EventBus.Publish(new DealerDrawnCardEvent(Hand.CalculateScore()));
         }
         if (Hand.CalculateScore() >= 17 && Hand.CalculateScore() <= 21)
         {

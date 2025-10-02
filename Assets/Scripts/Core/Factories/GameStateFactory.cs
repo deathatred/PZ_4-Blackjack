@@ -2,7 +2,7 @@ using UnityEngine;
 using Zenject;
 using Zenject.Asteroids;
 
-public class GameStateFactory 
+public class GameStateFactory
 {
     private readonly DiContainer _container;
     public GameStateFactory(DiContainer container)
@@ -19,6 +19,8 @@ public class GameStateFactory
         {
             case GameState.GameStart:
                 return CreateState<GameStartState>();
+            case GameState.Betting:
+                return CreateState<BettingState>();
             case GameState.Dealing:
                 return CreateState<DealingState>();
             case GameState.PlayerTurn:
@@ -34,7 +36,7 @@ public class GameStateFactory
             case GameState.DealerWin:
                 return CreateState<DealerWinState>();
             case GameState.GameOver:
-                return null;
+                return CreateState<GameOverState>();
         }
         Debug.LogError("State does not exist");
         return null;

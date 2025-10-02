@@ -4,16 +4,21 @@ using Zenject;
 
 public class ResetingTableState : GameStateBase
 {
-    [Inject] private PlayerController _playerController;
-    [Inject] private DeckManager _deckManager;
+    private PlayerController _playerController;
+    private DeckManager _deckManager;
+    private MoneyManager _moneyManager;
     private bool _isWaiting = false;
-    public ResetingTableState(GameStateMachine fsm) : base(fsm)
+    public ResetingTableState(PlayerController player,
+        DeckManager deckManager,
+        MoneyManager moneyManager, GameStateMachine fsm) : base(fsm)
     {
+        _playerController = player;
+        _deckManager = deckManager;
+        _moneyManager = moneyManager;
     }
 
     public override void Enter()
     {
-        Debug.Log("ENTERED RESET TABLE");
         EventBus.Publish(new EnteredResetStateEvent());
     }
 
@@ -24,6 +29,11 @@ public class ResetingTableState : GameStateBase
 
     public override void Update()
     {
+        if (_moneyManager.MoneyAmount == 0)
+        {
+            _fsm.ChangeState(GameState.GameOver);
+            return;
+        }
         if (!_isWaiting)
         {
             _isWaiting = true;
@@ -33,7 +43,7 @@ public class ResetingTableState : GameStateBase
     private async UniTask StartNextDealAsync()
     {
         await UniTask.WaitForSeconds(2f);
-        _fsm.ChangeState(GameState.Dealing);
+        _fsm.ChangeState(GameState.Betting);
         _isWaiting = false; 
     }
 }

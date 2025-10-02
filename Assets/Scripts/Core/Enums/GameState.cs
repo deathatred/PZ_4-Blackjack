@@ -3,6 +3,7 @@ using UnityEngine;
 public enum GameState 
 {   
     GameStart,
+    Betting,
     Dealing,       
     PlayerTurn,    
     DealerTurn,     

@@ -19,6 +19,6 @@ public class GameStartState : GameStateBase
 
     public override void Update()
     {
-        _fsm.ChangeState(GameState.Dealing);
+        _fsm.ChangeState(GameState.Betting);
     }
 }

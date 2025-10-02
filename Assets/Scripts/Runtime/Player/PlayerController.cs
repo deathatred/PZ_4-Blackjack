@@ -31,6 +31,7 @@ public class PlayerController : MonoBehaviour
         for (int i = 0; i < 2; i++)
         {
             await TakeCardAsync();
+            EventBus.Publish(new PlayerDrawnCardEvent(Hand.CalculateScore()));
         }
         if (Hand.CalculateScore() == 21) 
         {
@@ -49,6 +50,7 @@ public class PlayerController : MonoBehaviour
         Hand.AddCard(card);
         await card.DrawFromDeck(handAnchor.position);
         Hand.UpdateHandLayout(handAnchor, spacing);
+        EventBus.Publish(new PlayerDrawnCardEvent(Hand.CalculateScore()));
         EventBus.Publish(new DealingCardsToPlayerEndedEvent());
     }
     private async UniTask TakeCardTurn()

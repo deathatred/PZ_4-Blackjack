@@ -1,8 +1,11 @@
+using Cysharp.Threading.Tasks;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using Zenject;
 
 public class PlayerWinState : GameStateBase
 {
+    private bool _isWaiting = false;    
     [Inject]
     public PlayerWinState(GameStateMachine fsm) : base(fsm)
     {
@@ -10,16 +13,22 @@ public class PlayerWinState : GameStateBase
 
     public override void Enter()
     {
-        throw new System.NotImplementedException();
+        EventBus.Publish(new PlayerWinEvent());
+
     }
 
     public override void Exit()
     {
-        throw new System.NotImplementedException();
+     
     }
 
-    public override void Update()
+    public async override void Update()
     {
-        throw new System.NotImplementedException();
+       if (!_isWaiting)
+        {
+            _isWaiting = true;
+            await UniTask.WaitForSeconds(2);
+            _fsm.ChangeState(GameState.ResetingTable);
+        }
     }
 }

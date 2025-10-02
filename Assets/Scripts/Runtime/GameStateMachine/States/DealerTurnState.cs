@@ -21,14 +21,15 @@ public class DealerTurnState : GameStateBase
 
     public override void Exit()
     {
-
+        EventBus.Unsubscribe<DealerTurnEndedEvent>(EndDealerTurn);
+        EventBus.Unsubscribe<PlayerWinEvent>(DealerLost);
     }
 
     public override void Update()
     {
         if (_dealerLost)
         {
-            _fsm.ChangeState(GameState.ResetingTable);
+            _fsm.ChangeState(GameState.PlayerWin);
         }
         if (_dealerTurnEnded)
         {
@@ -49,8 +50,8 @@ public class DealerTurnState : GameStateBase
     }
     private async UniTask StartNextDealAsync()
     {
-        await UniTask.WaitForSeconds(2f);
-        _fsm.ChangeState(GameState.ResetingTable);
+        await UniTask.WaitForSeconds(1f);
+        _fsm.ChangeState(GameState.DealerWin);
         _isWaiting = false;
     }
 }

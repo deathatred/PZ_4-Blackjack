@@ -38,14 +38,14 @@ public class ComparingHandsState : GameStateBase
             Debug.Log("player wins");
             EventBus.Publish(new PlayerWinEvent());
             await UniTask.WaitForSeconds(2.5f);
-            _fsm.ChangeState(GameState.ResetingTable);
+            _fsm.ChangeState(GameState.PlayerWin);
         }
         else if (dealerRes > playerRes)
         {
             Debug.Log("player lost(");
             EventBus.Publish(new DealerWinEvent());
             await UniTask.WaitForSeconds(2.5f);
-            _fsm.ChangeState(GameState.ResetingTable);
+            _fsm.ChangeState(GameState.DealerWin);
         }
 
     }

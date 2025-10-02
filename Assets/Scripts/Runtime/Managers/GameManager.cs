@@ -6,10 +6,13 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
     private DeckManager _deckManager;
+    private MoneyManager _moneyManager;
     private GameStateMachine _gameStateMachine;
     [Inject]
-    public void Construct(DeckManager deckManager, GameStateMachine gameStateMachine)
+    public void Construct(DeckManager deckManager, MoneyManager moneyManager,
+        GameStateMachine gameStateMachine)
     {
+        _moneyManager = moneyManager;
         _deckManager = deckManager;
         _deckManager.Init();
         _gameStateMachine = gameStateMachine;
@@ -26,7 +29,8 @@ public class GameManager : MonoBehaviour
     }
     private void OnDestroy()
     {
-       _deckManager.Dispose();
+        _deckManager.Dispose();
+        _moneyManager.Dispose();
     }
     private void InitSingleton()
     {

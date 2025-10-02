@@ -1,61 +1,194 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class GameViewUI : MonoBehaviour
 {
+    [SerializeField] private Image _endOfRoundBackground;
     [SerializeField] private Button _takeButton;
     [SerializeField] private Button _pushButton;
     [SerializeField] private TextMeshProUGUI _dealerScoreText;
     [SerializeField] private TextMeshProUGUI _playerScoreText;
     [SerializeField] private TextMeshProUGUI _playerMoneyText;
+    [SerializeField] private TextMeshProUGUI _endOfRoundText;
+    [SerializeField] private RectTransform _endOfTurnObj;
+    [SerializeField] private RectTransform _bettingObj;
+    [SerializeField] private TextMeshProUGUI _betMoneyText;
+    [SerializeField] private Button _plusButton;
+    [SerializeField] private Button _minusButton;
+    [SerializeField] private Button _placeBetButton;
 
-    private void OnEnable()
-    {
-        SubscribeToEvents();
-    }
+    [Inject] private MoneyManager _moneyManager;
+
+    private int _betModifier = 100;
+    private int _betMoney = 0;
+
+    private Action<PlayerTurnStartedEvent> _onPlayerTurnStart;
+    private Action<PlayerTurnEndedEvent> _onPlayerTurnEnd;
+    private Action<DealingCardsToPlayerEndedEvent> _onDealingEnded;
+    private Action<DealingCardsToPlayerStartedEvent> _onDealingStarted;
+    private Action<MoneyChangedEvent> _onMoneyChanged;
+    private Action<PlayerWinEvent> _onPlayerWin;
+    private Action<DealerWinEvent> _onPlayerLose;
+    private Action<BettingStartedEvent> _onResetEndOfTurn;
+    private Action<BettingStartedEvent> _onShowBetMenu;
+    private Action<BettingEndedEvent> _onHideBetMenu;
+    private Action<PlayerDrawnCardEvent> _onPlayerDrawnCard;
+    private Action<DealerDrawnCardEvent> _onDealerDrawnCard;
+
     private void Awake()
     {
+        _betMoney = _betModifier;
         BindButtons();
         SetButtonsOff(new PlayerTurnEndedEvent());
     }
+
+    private void OnEnable() => SubscribeToEvents();
     private void OnDisable()
     {
         UnsubscribeFromEvents();
+        UnbindButtons();
     }
+
     private void BindButtons()
     {
         _takeButton.onClick.AddListener(TakePressed);
         _pushButton.onClick.AddListener(PushPressed);
+        _plusButton.onClick.AddListener(AddMoneyToBet);
+        _minusButton.onClick.AddListener(RemoveMoneyFromBet);
+        _placeBetButton.onClick.AddListener(PlaceBet);
     }
-    private void TakePressed()
+
+    private void UnbindButtons()
     {
-        EventBus.Publish(new TakeButtonPressedEvent());
+        _takeButton.onClick.RemoveListener(TakePressed);
+        _pushButton.onClick.RemoveListener(PushPressed);
+        _plusButton.onClick.RemoveListener(AddMoneyToBet);
+        _minusButton.onClick.RemoveListener(RemoveMoneyFromBet);
+        _placeBetButton.onClick.RemoveListener(PlaceBet);
     }
-    private void PushPressed()
-    {
-        EventBus.Publish(new PushButtonPressedEvent());
-    }
+
+    private void TakePressed() => EventBus.Publish(new TakeButtonPressedEvent());
+    private void PushPressed() => EventBus.Publish(new PushButtonPressedEvent());
+
     private void SubscribeToEvents()
     {
-        EventBus.Subscribe<PlayerTurnStartedEvent>(SetButtonsOn);
-        EventBus.Subscribe<PlayerTurnEndedEvent>(SetButtonsOff);
-        EventBus.Subscribe<DealingCardsToPlayerEndedEvent>(SetButtonsOn);
-        EventBus.Subscribe<DealingCardsToPlayerStartedEvent>(SetButtonsOff);
+        _onPlayerTurnStart = e => SetButtonsOn(e);
+        _onPlayerTurnEnd = e => SetButtonsOff(e);
+        _onDealingEnded = e => SetButtonsOn(e);
+        _onDealingStarted = e => SetButtonsOff(e);
+
+        _onMoneyChanged = e => ChangeMoney(e);
+        _onPlayerWin = e => PlayerWinRoundMsg(e);
+        _onPlayerLose = e => PlayerLostRoundMsg(e);
+        _onResetEndOfTurn = e => ResetComponentsAtTheEndOfTurn(e);
+        _onShowBetMenu = e => ShowBetMenu(e);
+        _onHideBetMenu = e => HideBetMenu(e);
+        _onPlayerDrawnCard = e => ChangePlayerScore(e);
+        _onDealerDrawnCard = e => ChangeDealerScore(e);
+
+        EventBus.Subscribe(_onPlayerTurnStart);
+        EventBus.Subscribe(_onPlayerTurnEnd);
+        EventBus.Subscribe(_onDealingEnded);
+        EventBus.Subscribe(_onDealingStarted);
+        EventBus.Subscribe(_onMoneyChanged);
+        EventBus.Subscribe(_onPlayerWin);
+        EventBus.Subscribe(_onPlayerLose);
+        EventBus.Subscribe(_onResetEndOfTurn);
+        EventBus.Subscribe(_onShowBetMenu);
+        EventBus.Subscribe(_onHideBetMenu);
+        EventBus.Subscribe(_onPlayerDrawnCard);
+        EventBus.Subscribe(_onDealerDrawnCard);
     }
+
     private void UnsubscribeFromEvents()
     {
-        EventBus.Unsubscribe<PlayerTurnStartedEvent>(SetButtonsOn);
-        EventBus.Unsubscribe<PlayerTurnEndedEvent>(SetButtonsOff);
+        EventBus.Unsubscribe(_onPlayerTurnStart);
+        EventBus.Unsubscribe(_onPlayerTurnEnd);
+        EventBus.Unsubscribe(_onDealingEnded);
+        EventBus.Unsubscribe(_onDealingStarted);
+        EventBus.Unsubscribe(_onMoneyChanged);
+        EventBus.Unsubscribe(_onPlayerWin);
+        EventBus.Unsubscribe(_onPlayerLose);
+        EventBus.Unsubscribe(_onResetEndOfTurn);
+        EventBus.Unsubscribe(_onShowBetMenu);
+        EventBus.Unsubscribe(_onHideBetMenu);
+        EventBus.Unsubscribe(_onPlayerDrawnCard);
     }
+
     private void SetButtonsOn(GameEventBase e)
     {
         _takeButton.gameObject.SetActive(true);
         _pushButton.gameObject.SetActive(true);
     }
+
     private void SetButtonsOff(GameEventBase e)
     {
         _takeButton.gameObject.SetActive(false);
         _pushButton.gameObject.SetActive(false);
+    }
+
+    private void ChangeMoney(MoneyChangedEvent e)
+    {
+        _playerMoneyText.text = $"{e.MoneyAmount}$";
+    }
+
+    private void PlayerLostRoundMsg(GameEventBase e)
+    {
+        _endOfTurnObj.gameObject.SetActive(true);
+        _endOfRoundText.text = "you lost";
+        _endOfRoundBackground.color = Color.red;
+    }
+
+    private void PlayerWinRoundMsg(GameEventBase e)
+    {
+        _endOfTurnObj.gameObject.SetActive(true);
+        _endOfRoundText.text = "you win";
+        _endOfRoundBackground.color = Color.green;
+    }
+
+    private void ResetComponentsAtTheEndOfTurn(GameEventBase e)
+    {
+        _endOfTurnObj.gameObject.SetActive(false);
+        _betMoney = _betModifier;
+        _betMoneyText.text = "100$";
+        _playerScoreText.text = "0";
+        _dealerScoreText.text= "0";
+    }
+
+    private void AddMoneyToBet()
+    {
+        if ((_betMoney + _betModifier) > _moneyManager.MoneyAmount) return;
+
+        _betMoney += _betModifier;
+        _betMoneyText.text = $"{_betMoney}$";
+    }
+
+    private void RemoveMoneyFromBet()
+    {
+        if ((_betMoney - _betModifier) <= 0) return;
+
+        _betMoney -= _betModifier;
+        _betMoneyText.text = $"{_betMoney}$";
+    }
+
+    private void PlaceBet()
+    {
+        _moneyManager.PlaceBet(_betMoney);
+        _playerMoneyText.text = $"{_moneyManager.MoneyAmount}$";
+    }
+
+    private void ShowBetMenu(GameEventBase e) => _bettingObj.gameObject.SetActive(true);
+    private void HideBetMenu(GameEventBase e) => _bettingObj.gameObject.SetActive(false);
+
+    private void ChangePlayerScore(PlayerDrawnCardEvent e)
+    {
+        _playerScoreText.text = e.Score.ToString();
+    }
+    private void ChangeDealerScore(DealerDrawnCardEvent e)
+    {
+        _dealerScoreText.text = e.Score.ToString();
     }
 }

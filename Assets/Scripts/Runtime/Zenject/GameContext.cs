@@ -7,6 +7,7 @@ public class GameContext : MonoInstaller
     [SerializeField] private List<Canvas> _viewsList;
     public override void InstallBindings()
     {
+        Container.Bind<MoneyManager>().FromNew().AsSingle().NonLazy();
         Container.Bind<PlayerController>().FromComponentInHierarchy().AsSingle().NonLazy();
         Container.Bind<Dealer>().FromComponentInHierarchy().AsSingle().NonLazy();
         Container.Bind<DeckManager>().FromComponentInHierarchy().AsSingle().NonLazy();

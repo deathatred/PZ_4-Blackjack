@@ -11,10 +11,9 @@ public class DealerWinState : GameStateBase
         _dealer = dealer;
     }
 
-    public async override void Enter()
+    public override void Enter()
     {
-        await _dealer.ShowCard();
-        _cardsShown = true;
+        EventBus.Publish(new DealerWinEvent());
     }
 
     public override void Exit()
@@ -24,9 +23,6 @@ public class DealerWinState : GameStateBase
 
     public override void Update()
     {
-        if (_cardsShown)
-        {
             _fsm.ChangeState(GameState.ResetingTable);
-        }
     }
 }
