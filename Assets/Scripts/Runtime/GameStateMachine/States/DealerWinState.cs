@@ -23,6 +23,6 @@ public class DealerWinState : GameStateBase
 
     public override void Update()
     {
-            _fsm.ChangeState(GameState.ResetingTable);
+        _fsm.ChangeState(GameState.ResetingTable);
     }
 }
