@@ -23,6 +23,8 @@ public class PlayerTurnState : GameStateBase
     {
         Debug.Log("Player turn ended bruh");
         EventBus.Publish(new PlayerTurnEndedEvent());
+        EventBus.Unsubscribe<PushButtonPressedEvent>(PlayerTurnEnded);
+        EventBus.Unsubscribe<DealerWinEvent>(DealerWin);
     }
 
     public override void Update()

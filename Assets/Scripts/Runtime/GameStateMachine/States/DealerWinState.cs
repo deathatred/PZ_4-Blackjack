@@ -4,7 +4,6 @@ using Zenject;
 public class DealerWinState : GameStateBase
 {
     private Dealer _dealer;
-    private bool _cardsShown = false;
     [Inject]
     public DealerWinState(Dealer dealer, GameStateMachine fsm) : base(fsm)
     {

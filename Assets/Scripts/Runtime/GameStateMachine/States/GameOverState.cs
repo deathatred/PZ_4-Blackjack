@@ -8,7 +8,7 @@ public class GameOverState : GameStateBase
 
     public override void Enter()
     {
-       
+        EventBus.Publish(new GameOverEvent());
     }
 
     public override void Exit()

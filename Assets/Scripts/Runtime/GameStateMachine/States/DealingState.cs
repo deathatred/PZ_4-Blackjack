@@ -21,7 +21,8 @@ public class DealingState : GameStateBase
     }
     public override void Exit()
     {
-
+        EventBus.Unsubscribe<DealingFinishedEvent>(DealingFinished);
+        EventBus.Unsubscribe<PlayerBlackjackEvent>(PlayerBlackjack);
     }
     public override void Update()
     {

@@ -8,11 +8,15 @@ public class GameManager : MonoBehaviour
     private DeckManager _deckManager;
     private MoneyManager _moneyManager;
     private GameStateMachine _gameStateMachine;
+    private ViewManager _viewManager;
     [Inject]
-    public void Construct(DeckManager deckManager, MoneyManager moneyManager,
+    public void Construct(DeckManager deckManager, 
+        ViewManager viewManager,
+        MoneyManager moneyManager,
         GameStateMachine gameStateMachine)
     {
         _moneyManager = moneyManager;
+        _viewManager = viewManager;
         _deckManager = deckManager;
         _deckManager.Init();
         _gameStateMachine = gameStateMachine;
@@ -31,6 +35,7 @@ public class GameManager : MonoBehaviour
     {
         _deckManager.Dispose();
         _moneyManager.Dispose();
+        _viewManager.Dispose();
     }
     private void InitSingleton()
     {
