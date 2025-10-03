@@ -24,11 +24,11 @@ public class GameStartState : GameStateBase
 
     public override void Update()
     {
-        //Debug.Log(_playPressed);
-        //if (_playPressed)
-        //{
+        Debug.Log(_playPressed);
+        if (_playPressed)
+        {
             _fsm.ChangeState(GameState.Betting);
-        //}
+        }
     }
     private void PlayPressed(GameEventBase e)
     {

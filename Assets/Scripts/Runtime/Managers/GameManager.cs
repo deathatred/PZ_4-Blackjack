@@ -2,7 +2,7 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using Zenject;
 
-public class GameManager
+public class GameManager : MonoBehaviour
 {
     private DeckManager _deckManager;
     private MoneyManager _moneyManager;
@@ -18,11 +18,6 @@ public class GameManager
         _viewManager = viewManager;
         _deckManager = deckManager;
         _gameStateMachine = gameStateMachine;
-<<<<<<< Updated upstream
-        _gameStateMachine.Init();
-=======
-
->>>>>>> Stashed changes
     }
     public void Update()
     {

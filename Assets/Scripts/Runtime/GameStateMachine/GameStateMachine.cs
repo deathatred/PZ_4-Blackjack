@@ -15,7 +15,7 @@ public class GameStateMachine
     [Inject]
     public void Initialize()
     {
-        Init(); // Zenject викликає після того, як всі інжекти готові
+        Init(); 
     }
     public void Init()
     {
