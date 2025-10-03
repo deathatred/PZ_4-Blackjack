@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
 
-public class ViewManager
+public class ViewManager: IDisposable
 {
     private const int GAME_VIEW_ID = 0;
     private const int GAME_END_VIEW_ID = 1;
