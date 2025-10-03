@@ -4,51 +4,58 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
 
-public class ViewManager : IDisposable
+public class ViewManager
 {
     private const int GAME_VIEW_ID = 0;
     private const int GAME_END_VIEW_ID = 1;
     private const int MENU_VIEW_ID = 2;
 
+    private readonly List<Canvas> _views;
+    private readonly EventBus _eventBus;
 
-    private List<Canvas> _views = new();
-
-    public ViewManager(List<Canvas> canvases)
+    public ViewManager(List<Canvas> canvases, EventBus eventBus)
     {
-        Debug.Log("New ViewManager created with canvases: " + _views.Count);
+        _views = new List<Canvas>();
         _views = canvases;
+        _eventBus = eventBus;
+        Debug.Log("New ViewManager created with canvases: " + _views.Count);
         foreach (var view in _views)
         {
             Debug.Log(view.ToString());
         }
-        ChangeCanvas(MENU_VIEW_ID);
         SubscribeToEvents();
+        ChangeCanvas(MENU_VIEW_ID);
     }
     public void ChangeCanvas(int id)
     {
-        if (id > _views.Count)
+        Debug.LogWarning($"Elements in list: {_views.Count}");
+        if (id >= _views.Count)
         {
             Debug.LogError($"This canvas id {id}, does not exist");
             return;
         }
         foreach (Canvas canvas in _views)
         {
-            canvas.enabled = false;
+            if (canvas != null)
+                canvas.enabled = false;
         }
-        _views[id].enabled = true;
+        
+        if(_views[id] != null)
+            _views[id].enabled = true;
     }
     private void SubscribeToEvents()
     {
-        EventBus.Subscribe<PlayPressedEvent>(PlayPressed);
-        EventBus.Subscribe<TryAgainPressedEvent>(TryAgainPressed);
-        EventBus.Subscribe<GameOverEvent>(GameOverDel);
+        Debug.LogWarning("Call Subscribe!");
+        _eventBus.Subscribe<PlayPressedEvent>(PlayPressed);
+        _eventBus.Subscribe<TryAgainPressedEvent>(TryAgainPressed);
+        _eventBus.Subscribe<GameOverEvent>(GameOverDel);
     }
     private void UnsubscribeFromEvents()
     {
-        Debug.Log("DispoceCalled");
-        EventBus.Unsubscribe<PlayPressedEvent>(PlayPressed);
-        EventBus.Unsubscribe<TryAgainPressedEvent>(TryAgainPressed);
-        EventBus.Unsubscribe<GameOverEvent>(GameOverDel);
+        Debug.LogWarning("Call Unsubscribe!");
+        _eventBus.Unsubscribe<PlayPressedEvent>(PlayPressed);
+        _eventBus.Unsubscribe<TryAgainPressedEvent>(TryAgainPressed);
+        _eventBus.Unsubscribe<GameOverEvent>(GameOverDel);
     }
     private void PlayPressed(GameEventBase e)
     {
@@ -56,6 +63,7 @@ public class ViewManager : IDisposable
     }
     private void TryAgainPressed(GameEventBase e)
     {
+        Dispose();
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.name);
     }
@@ -68,6 +76,5 @@ public class ViewManager : IDisposable
     {
         UnsubscribeFromEvents();
         _views.Clear();
-
     }
 }

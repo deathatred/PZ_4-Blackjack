@@ -1,47 +1,79 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
+using Zenject;
 
-public static class EventBus
+// Безпечний EventBus, DI-сумісний
+public class EventBus : IInitializable, IDisposable
 {
-    private static readonly Dictionary<Type, List<Action<GameEventBase>>> _subscribers =
+    // Словник: тип події → список підписників
+    private readonly Dictionary<Type, List<Action<GameEventBase>>> _subscribers =
         new Dictionary<Type, List<Action<GameEventBase>>>();
-    private static readonly Dictionary<Delegate, Action<GameEventBase>> _wrappers = 
-        new Dictionary<Delegate, Action<GameEventBase>>();
 
-    public static void Subscribe<T>(Action<T> action) where T : GameEventBase
+    // Клонування під час Publish для безпечної ітерації
+    public void Publish(GameEventBase eventData)
+    {
+        var type = eventData.GetType();
+        if (!_subscribers.TryGetValue(type, out var handlers)) return;
+
+        // Клон списку, щоб безпечно обходитись при видаленні підписників
+        var snapshot = new List<Action<GameEventBase>>(handlers);
+        foreach (var handler in snapshot)
+        {
+            try
+            {
+                handler.Invoke(eventData);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError($"EventBus handler error: {e}");
+            }
+        }
+    }
+
+    // Підписка
+    public void Subscribe<T>(Action<T> action) where T : GameEventBase
     {
         var type = typeof(T);
-        if (!_subscribers.ContainsKey(type))
+        if (!_subscribers.TryGetValue(type, out var list))
         {
-            _subscribers[type] = new List<Action<GameEventBase>>();
+            list = new List<Action<GameEventBase>>();
+            _subscribers[type] = list;
         }
 
-        Action<GameEventBase> wrapper = (e) => action((T)e);
-
-        _subscribers[type].Add(wrapper);
-        _wrappers[action] = wrapper;
+        // Обгортка для приведення типів
+        Action<GameEventBase> wrapper = e => action((T)e);
+        list.Add(wrapper);
     }
-    public static void Unsubscribe<T>(Action<T> action) where T : GameEventBase
+
+    // Відписка
+    public void Unsubscribe<T>(Action<T> action) where T : GameEventBase
     {
         var type = typeof(T);
-        if (!_subscribers.ContainsKey(type))
+        if (!_subscribers.TryGetValue(type, out var list)) return;
+
+        // Видаляємо всі підписники з таким же target+method
+        list.RemoveAll(wrapper =>
         {
-            return;
-        }
-        _subscribers[type].Remove(_wrappers[action]);
-        _wrappers.Remove(action);
+            var del = wrapper.Target as Delegate;
+            return del != null && del.Method == action.Method && del.Target == action.Target;
+        });
     }
-    public static void Publish(GameEventBase action)
+
+    // Очистка всіх підписників
+    public void Clear()
     {
-        var type = action.GetType();
-        if (!_subscribers.ContainsKey(type))
-        {
-            return;
-        }
-        foreach (var subscriber in _subscribers[type])
-        {
-            subscriber.Invoke(action);
-        }
+        _subscribers.Clear();
+    }
+
+    // Zenject IInitializable (опційно)
+    public void Initialize()
+    {
+        // Можна робити лог або підписку на глобальні події
+    }
+
+    // Zenject IDisposable
+    public void Dispose()
+    {
+        Clear();
     }
 }

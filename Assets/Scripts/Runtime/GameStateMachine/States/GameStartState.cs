@@ -3,20 +3,22 @@ using Zenject;
 
 public class GameStartState : GameStateBase
 {
+    private readonly EventBus _eventBus;
     private bool _playPressed;
     [Inject]
-    public GameStartState(GameStateMachine fsm) : base(fsm)
+    public GameStartState(GameStateMachine fsm, EventBus eventBus) : base(fsm)
     {
+        _eventBus = eventBus;
     }
 
     public override void Enter()
     {
-        EventBus.Subscribe<PlayPressedEvent>(PlayPressed);
+        _eventBus.Subscribe<PlayPressedEvent>(PlayPressed);
     }
 
     public override void Exit()
     {
-        EventBus.Unsubscribe<PlayPressedEvent>(PlayPressed);
+        _eventBus.Unsubscribe<PlayPressedEvent>(PlayPressed);
     }
 
     public override void Update()

@@ -5,15 +5,17 @@ using Zenject;
 
 public class PlayerWinState : GameStateBase
 {
+    private readonly EventBus _eventBus;
     private bool _isWaiting = false;    
     [Inject]
-    public PlayerWinState(GameStateMachine fsm) : base(fsm)
+    public PlayerWinState(GameStateMachine fsm, EventBus eventBus) : base(fsm)
     {
+        _eventBus = eventBus;
     }
 
     public override void Enter()
     {
-        EventBus.Publish(new PlayerWinEvent());
+        _eventBus.Publish(new PlayerWinEvent());
 
     }
 

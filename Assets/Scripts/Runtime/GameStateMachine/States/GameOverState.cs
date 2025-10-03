@@ -2,13 +2,16 @@ using UnityEngine;
 
 public class GameOverState : GameStateBase
 {
-    public GameOverState(GameStateMachine fsm) : base(fsm)
+    private readonly EventBus _eventBus;
+
+    public GameOverState(GameStateMachine fsm, EventBus eventBus) : base(fsm)
     {
+        _eventBus = eventBus;
     }
 
     public override void Enter()
     {
-        EventBus.Publish(new GameOverEvent());
+        _eventBus.Publish(new GameOverEvent());
     }
 
     public override void Exit()

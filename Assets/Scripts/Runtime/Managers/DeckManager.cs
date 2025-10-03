@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using Zenject;
 
 public class DeckManager : MonoBehaviour, IDisposable
 {
@@ -12,6 +13,14 @@ public class DeckManager : MonoBehaviour, IDisposable
     private Quaternion _defaultCardRot = Quaternion.Euler(-90f,-90f,-90f);
 
     private List<Card> _currentDeck = new List<Card>();
+    private EventBus _eventBus;
+
+    [Inject]
+    public void Construct(EventBus eventBus)
+    {
+        _eventBus = eventBus;
+    }
+    
     public void Init()
     {
         foreach (var card in _cardDatabaseSO.CardsList)
@@ -57,11 +66,11 @@ public class DeckManager : MonoBehaviour, IDisposable
     }
     private void SubscribeToEvents()
     {
-        EventBus.Subscribe<EnteredResetStateEvent>(ShuffleEvent);
+        _eventBus.Subscribe<EnteredResetStateEvent>(ShuffleEvent);
     }
     private void UnsubscribeFromEvents()
     {
-        EventBus.Unsubscribe<EnteredResetStateEvent>(ShuffleEvent);
+        _eventBus.Unsubscribe<EnteredResetStateEvent>(ShuffleEvent);
     }
     private void ShuffleEvent(GameEventBase e)
     {

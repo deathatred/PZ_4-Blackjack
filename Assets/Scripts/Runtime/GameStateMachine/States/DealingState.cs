@@ -6,23 +6,25 @@ public class DealingState : GameStateBase
     private bool _dealingFinished = false;
     private bool _playerBlackjack = false;
     private DeckManager _deckManager;
+    private readonly EventBus _eventBus;
 
     [Inject]
-    public DealingState(DeckManager deckManager,GameStateMachine fsm) : base(fsm)
+    public DealingState(DeckManager deckManager,GameStateMachine fsm, EventBus eventBus) : base(fsm)
     {
         _deckManager = deckManager;
+        _eventBus = eventBus;
     }
     public override void Enter()
     {
         Debug.Log(_deckManager.GetDeckCount());
-        EventBus.Publish(new DealingStartedEvent());
-        EventBus.Subscribe<DealingFinishedEvent>(DealingFinished);
-        EventBus.Subscribe<PlayerBlackjackEvent>(PlayerBlackjack);
+        _eventBus.Publish(new DealingStartedEvent());
+        _eventBus.Subscribe<DealingFinishedEvent>(DealingFinished);
+        _eventBus.Subscribe<PlayerBlackjackEvent>(PlayerBlackjack);
     }
     public override void Exit()
     {
-        EventBus.Unsubscribe<DealingFinishedEvent>(DealingFinished);
-        EventBus.Unsubscribe<PlayerBlackjackEvent>(PlayerBlackjack);
+        _eventBus.Unsubscribe<DealingFinishedEvent>(DealingFinished);
+        _eventBus.Unsubscribe<PlayerBlackjackEvent>(PlayerBlackjack);
     }
     public override void Update()
     {

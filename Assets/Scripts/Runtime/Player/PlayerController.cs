@@ -9,13 +9,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform handAnchor;
     private float spacing = 2f;
     private DeckManager _deckManager;
+    private EventBus _eventBus;
     public Hand Hand { get; private set; }
 
     [Inject]
-    public void Construct(DeckManager deck)
+    public void Construct(DeckManager deck, EventBus eventBus)
     {
         _deckManager = deck;
         Hand= new Hand(_deckManager);
+        _eventBus =  eventBus;
     }
 
     private void OnEnable()
@@ -31,52 +33,52 @@ public class PlayerController : MonoBehaviour
         for (int i = 0; i < 2; i++)
         {
             await TakeCardAsync();
-            EventBus.Publish(new PlayerDrawnCardEvent(Hand.CalculateScore()));
+            _eventBus.Publish(new PlayerDrawnCardEvent(Hand.CalculateScore()));
         }
         if (Hand.CalculateScore() == 21) 
         {
-            EventBus.Publish(new PlayerBlackjackEvent());
+            _eventBus.Publish(new PlayerBlackjackEvent());
         }
         else
         {
-            EventBus.Publish(new DealingFinishedEvent());
+            _eventBus.Publish(new DealingFinishedEvent());
         }
     }
     private async UniTask TakeCardAsync()
     {
         Card card = _deckManager.DrawCard();
         if (card == null) { Debug.Log(_deckManager.GetDeckCount() + "count"); return; }
-        EventBus.Publish(new DealingCardsToPlayerStartedEvent());
+        _eventBus.Publish(new DealingCardsToPlayerStartedEvent());
         Hand.AddCard(card);
         await card.DrawFromDeck(handAnchor.position);
         Hand.UpdateHandLayout(handAnchor, spacing);
-        EventBus.Publish(new PlayerDrawnCardEvent(Hand.CalculateScore()));
-        EventBus.Publish(new DealingCardsToPlayerEndedEvent());
+        _eventBus.Publish(new PlayerDrawnCardEvent(Hand.CalculateScore()));
+        _eventBus.Publish(new DealingCardsToPlayerEndedEvent());
     }
     private async UniTask TakeCardTurn()
     {
         await TakeCardAsync();
         if (Hand.CalculateScore() == 21)
         {
-            EventBus.Publish(new PlayerBlackjackEvent());
+            _eventBus.Publish(new PlayerBlackjackEvent());
         }
         if (Hand.CalculateScore() > 21)
         {
             print("Player lost");
-            EventBus.Publish(new DealerWinEvent());
+            _eventBus.Publish(new DealerWinEvent());
         }
     }
     private void SubscribeToEvents()
     {
-        EventBus.Subscribe<DealingStartedEvent>(FirstTurn);
-        EventBus.Subscribe<TakeButtonPressedEvent>(TakeTurn);
-        EventBus.Subscribe<EnteredResetStateEvent>(Hand.ReturnCards);
+        _eventBus.Subscribe<DealingStartedEvent>(FirstTurn);
+        _eventBus.Subscribe<TakeButtonPressedEvent>(TakeTurn);
+        _eventBus.Subscribe<EnteredResetStateEvent>(Hand.ReturnCards);
     }
     private void UnsubscribeFromEvents()
     {
-        EventBus.Unsubscribe<DealingStartedEvent>(FirstTurn);
-        EventBus.Unsubscribe<TakeButtonPressedEvent>(TakeTurn);
-        EventBus.Unsubscribe<EnteredResetStateEvent>(Hand.ReturnCards);
+        _eventBus.Unsubscribe<DealingStartedEvent>(FirstTurn);
+        _eventBus.Unsubscribe<TakeButtonPressedEvent>(TakeTurn);
+        _eventBus.Unsubscribe<EnteredResetStateEvent>(Hand.ReturnCards);
     }
   
     private void FirstTurn(DealingStartedEvent e)

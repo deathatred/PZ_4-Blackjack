@@ -1,12 +1,20 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class GameEndViewUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _gameEndText;
     [SerializeField] private Button _tryAgainButton;
+    private EventBus _eventBus;
 
+    [Inject]
+    public void Construct(EventBus eventBus)
+    {
+        _eventBus =  eventBus;
+    }
+    
     private void Start()
     {
         BindButtons();
@@ -25,6 +33,6 @@ public class GameEndViewUI : MonoBehaviour
     }
     private void  TryAgainButtonPress()
     {
-        EventBus.Publish(new TryAgainPressedEvent());
+        _eventBus.Publish(new TryAgainPressedEvent());
     }
 }

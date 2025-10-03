@@ -9,24 +9,27 @@ public class Dealer : MonoBehaviour
     [SerializeField] private Transform handAnchor;
     private float spacing = 2f;
     private DeckManager _deckManager;
+    private EventBus _eventBus;
+    
     [Inject]
-    public void Construct(DeckManager deck)
+    public void Construct(DeckManager deck, EventBus eventBus)
     {
         _deckManager = deck;
         Hand = new Hand(_deckManager);
+        _eventBus = eventBus;
     }
 
     public void OnEnable()
     {
-        EventBus.Subscribe<DealingStartedEvent>(FirstTurn);
-        EventBus.Subscribe<DealerTurnStartedEvent>(StartDealerTurn);
-        EventBus.Subscribe<EnteredResetStateEvent>(Hand.ReturnCards);
+        _eventBus.Subscribe<DealingStartedEvent>(FirstTurn);
+        _eventBus.Subscribe<DealerTurnStartedEvent>(StartDealerTurn);
+        _eventBus.Subscribe<EnteredResetStateEvent>(Hand.ReturnCards);
     }
     private void OnDisable()
     {
-        EventBus.Unsubscribe<DealingStartedEvent>(FirstTurn);
-        EventBus.Unsubscribe<DealerTurnStartedEvent>(StartDealerTurn);
-        EventBus.Unsubscribe<EnteredResetStateEvent>(Hand.ReturnCards);
+        _eventBus.Unsubscribe<DealingStartedEvent>(FirstTurn);
+        _eventBus.Unsubscribe<DealerTurnStartedEvent>(StartDealerTurn);
+        _eventBus.Unsubscribe<EnteredResetStateEvent>(Hand.ReturnCards);
     }
 
     public void FirstTurn(DealingStartedEvent e)
@@ -47,7 +50,7 @@ public class Dealer : MonoBehaviour
             else
             {
                 await card.DrawFromDeck(handAnchor.position);
-                EventBus.Publish(new DealerDrawnCardEvent(Hand.CalculateScore()));
+                _eventBus.Publish(new DealerDrawnCardEvent(Hand.CalculateScore()));
             }
                 Hand.UpdateHandLayout(handAnchor, spacing);
         }
@@ -57,7 +60,7 @@ public class Dealer : MonoBehaviour
         if (!Hand.GetCards()[1].IsFlipped)
         {  
             await Hand.GetCards()[1].Flip();
-            EventBus.Publish(new DealerDrawnCardEvent(Hand.CalculateScore()));
+            _eventBus.Publish(new DealerDrawnCardEvent(Hand.CalculateScore()));
         }
     }
     public async UniTask DrawCardAsync()
@@ -80,16 +83,16 @@ public class Dealer : MonoBehaviour
         while (Hand.CalculateScore() < 17)
         {
            await DrawCardAsync();
-           EventBus.Publish(new DealerDrawnCardEvent(Hand.CalculateScore()));
+           _eventBus.Publish(new DealerDrawnCardEvent(Hand.CalculateScore()));
         }
         if (Hand.CalculateScore() >= 17 && Hand.CalculateScore() <= 21)
         {
-            EventBus.Publish(new DealerTurnEndedEvent());
+            _eventBus.Publish(new DealerTurnEndedEvent());
         }
         else
         {
             print("dealer lost, player wins ");
-            EventBus.Publish(new PlayerWinEvent());
+            _eventBus.Publish(new PlayerWinEvent());
         }
     }
 }

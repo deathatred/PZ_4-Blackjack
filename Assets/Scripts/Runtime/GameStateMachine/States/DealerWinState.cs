@@ -4,15 +4,18 @@ using Zenject;
 public class DealerWinState : GameStateBase
 {
     private Dealer _dealer;
+    private readonly EventBus _eventBus;
+
     [Inject]
-    public DealerWinState(Dealer dealer, GameStateMachine fsm) : base(fsm)
+    public DealerWinState(Dealer dealer, GameStateMachine fsm, EventBus eventBus) : base(fsm)
     {
         _dealer = dealer;
+        _eventBus = eventBus;
     }
 
     public override void Enter()
     {
-        EventBus.Publish(new DealerWinEvent());
+        _eventBus.Publish(new DealerWinEvent());
     }
 
     public override void Exit()

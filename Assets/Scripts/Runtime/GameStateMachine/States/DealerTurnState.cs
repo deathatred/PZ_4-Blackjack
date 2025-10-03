@@ -4,25 +4,27 @@ using Zenject;
 
 public class DealerTurnState : GameStateBase
 {
+    private readonly EventBus _eventBus;
     private bool _dealerTurnEnded = false;
     private bool _dealerLost = false;   
     private bool _isWaiting = false;
     [Inject]
-    public DealerTurnState(GameStateMachine fsm) : base(fsm)
+    public DealerTurnState(GameStateMachine fsm, EventBus eventBus) : base(fsm)
     {
+        _eventBus = eventBus;
     }
 
     public override void Enter()
     {
-        EventBus.Publish(new DealerTurnStartedEvent());
-        EventBus.Subscribe<DealerTurnEndedEvent>(EndDealerTurn);
-        EventBus.Subscribe<PlayerWinEvent>(DealerLost);
+        _eventBus.Publish(new DealerTurnStartedEvent());
+        _eventBus.Subscribe<DealerTurnEndedEvent>(EndDealerTurn);
+        _eventBus.Subscribe<PlayerWinEvent>(DealerLost);
     }
 
     public override void Exit()
     {
-        EventBus.Unsubscribe<DealerTurnEndedEvent>(EndDealerTurn);
-        EventBus.Unsubscribe<PlayerWinEvent>(DealerLost);
+        _eventBus.Unsubscribe<DealerTurnEndedEvent>(EndDealerTurn);
+        _eventBus.Unsubscribe<PlayerWinEvent>(DealerLost);
     }
 
     public override void Update()

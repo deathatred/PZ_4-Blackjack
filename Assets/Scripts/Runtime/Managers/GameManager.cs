@@ -35,7 +35,6 @@ public class GameManager : MonoBehaviour
     {
         _deckManager.Dispose();
         _moneyManager.Dispose();
-        _viewManager.Dispose();
     }
     private void InitSingleton()
     {

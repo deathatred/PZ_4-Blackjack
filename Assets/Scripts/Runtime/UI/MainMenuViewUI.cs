@@ -1,10 +1,17 @@
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class MainMenuViewUI : MonoBehaviour
 {
     [SerializeField] private Button _playButton;
+    private EventBus _eventBus;
 
+    [Inject]
+    public void Construct(EventBus eventBus)
+    {
+        _eventBus =  eventBus;
+    }
     private void Start()
     {
         BindButtons();
@@ -23,6 +30,6 @@ public class MainMenuViewUI : MonoBehaviour
     }
     private void PlayButtonPress()
     {
-        EventBus.Publish(new PlayPressedEvent());
+        _eventBus.Publish(new PlayPressedEvent());
     }
 }

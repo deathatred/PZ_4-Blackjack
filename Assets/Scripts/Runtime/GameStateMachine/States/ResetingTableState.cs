@@ -8,18 +8,22 @@ public class ResetingTableState : GameStateBase
     private DeckManager _deckManager;
     private MoneyManager _moneyManager;
     private bool _isWaiting = false;
+
+    private readonly EventBus _eventBus;
+
     public ResetingTableState(PlayerController player,
         DeckManager deckManager,
-        MoneyManager moneyManager, GameStateMachine fsm) : base(fsm)
+        MoneyManager moneyManager, GameStateMachine fsm, EventBus eventBus) : base(fsm)
     {
         _playerController = player;
         _deckManager = deckManager;
         _moneyManager = moneyManager;
+        _eventBus = eventBus;
     }
 
     public override void Enter()
     {
-        EventBus.Publish(new EnteredResetStateEvent());
+        _eventBus.Publish(new EnteredResetStateEvent());
     }
 
     public override void Exit()

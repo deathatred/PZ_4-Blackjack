@@ -92,7 +92,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
             ""id"": ""dfd66aaa-be19-4eb6-be66-5c4621cb7201"",
             ""actions"": [
                 {
-                    ""name"": ""TakeCardAsync"",
+                    ""name"": ""TakeCard"",
                     ""type"": ""Button"",
                     ""id"": ""4a324c8b-6a9d-46e1-b104-fd7d74691d14"",
                     ""expectedControlType"": """",
@@ -109,7 +109,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""TakeCardAsync"",
+                    ""action"": ""TakeCard"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -120,7 +120,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
 }");
         // Player
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
-        m_Player_TakeCard = m_Player.FindAction("TakeCardAsync", throwIfNotFound: true);
+        m_Player_TakeCard = m_Player.FindAction("TakeCard", throwIfNotFound: true);
     }
 
     ~@PlayerInputAction()
@@ -214,7 +214,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
         /// </summary>
         public PlayerActions(@PlayerInputAction wrapper) { m_Wrapper = wrapper; }
         /// <summary>
-        /// Provides access to the underlying input action "Player/TakeCardAsync".
+        /// Provides access to the underlying input action "Player/TakeCard".
         /// </summary>
         public InputAction @TakeCard => m_Wrapper.m_Player_TakeCard;
         /// <summary>
@@ -301,7 +301,7 @@ public partial class @PlayerInputAction: IInputActionCollection2, IDisposable
     public interface IPlayerActions
     {
         /// <summary>
-        /// Method invoked when associated input action "TakeCardAsync" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// Method invoked when associated input action "TakeCard" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>
         /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />

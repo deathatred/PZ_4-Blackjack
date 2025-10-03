@@ -37,6 +37,14 @@ public class GameViewUI : MonoBehaviour
     private Action<BettingEndedEvent> _onHideBetMenu;
     private Action<PlayerDrawnCardEvent> _onPlayerDrawnCard;
     private Action<DealerDrawnCardEvent> _onDealerDrawnCard;
+    
+    private EventBus _eventBus;
+
+    [Inject]
+    public void Construct(EventBus eventBus)
+    {
+        _eventBus =  eventBus;
+    }
 
     private void Awake()
     {
@@ -70,8 +78,8 @@ public class GameViewUI : MonoBehaviour
         _placeBetButton.onClick.RemoveListener(PlaceBet);
     }
 
-    private void TakePressed() => EventBus.Publish(new TakeButtonPressedEvent());
-    private void PushPressed() => EventBus.Publish(new PushButtonPressedEvent());
+    private void TakePressed() => _eventBus.Publish(new TakeButtonPressedEvent());
+    private void PushPressed() => _eventBus.Publish(new PushButtonPressedEvent());
 
     private void SubscribeToEvents()
     {
@@ -89,33 +97,33 @@ public class GameViewUI : MonoBehaviour
         _onPlayerDrawnCard = e => ChangePlayerScore(e);
         _onDealerDrawnCard = e => ChangeDealerScore(e);
 
-        EventBus.Subscribe(_onPlayerTurnStart);
-        EventBus.Subscribe(_onPlayerTurnEnd);
-        EventBus.Subscribe(_onDealingEnded);
-        EventBus.Subscribe(_onDealingStarted);
-        EventBus.Subscribe(_onMoneyChanged);
-        EventBus.Subscribe(_onPlayerWin);
-        EventBus.Subscribe(_onPlayerLose);
-        EventBus.Subscribe(_onResetEndOfTurn);
-        EventBus.Subscribe(_onShowBetMenu);
-        EventBus.Subscribe(_onHideBetMenu);
-        EventBus.Subscribe(_onPlayerDrawnCard);
-        EventBus.Subscribe(_onDealerDrawnCard);
+        _eventBus.Subscribe(_onPlayerTurnStart);
+        _eventBus.Subscribe(_onPlayerTurnEnd);
+        _eventBus.Subscribe(_onDealingEnded);
+        _eventBus.Subscribe(_onDealingStarted);
+        _eventBus.Subscribe(_onMoneyChanged);
+        _eventBus.Subscribe(_onPlayerWin);
+        _eventBus.Subscribe(_onPlayerLose);
+        _eventBus.Subscribe(_onResetEndOfTurn);
+        _eventBus.Subscribe(_onShowBetMenu);
+        _eventBus.Subscribe(_onHideBetMenu);
+        _eventBus.Subscribe(_onPlayerDrawnCard);
+        _eventBus.Subscribe(_onDealerDrawnCard);
     }
 
     private void UnsubscribeFromEvents()
     {
-        EventBus.Unsubscribe(_onPlayerTurnStart);
-        EventBus.Unsubscribe(_onPlayerTurnEnd);
-        EventBus.Unsubscribe(_onDealingEnded);
-        EventBus.Unsubscribe(_onDealingStarted);
-        EventBus.Unsubscribe(_onMoneyChanged);
-        EventBus.Unsubscribe(_onPlayerWin);
-        EventBus.Unsubscribe(_onPlayerLose);
-        EventBus.Unsubscribe(_onResetEndOfTurn);
-        EventBus.Unsubscribe(_onShowBetMenu);
-        EventBus.Unsubscribe(_onHideBetMenu);
-        EventBus.Unsubscribe(_onPlayerDrawnCard);
+        _eventBus.Unsubscribe(_onPlayerTurnStart);
+        _eventBus.Unsubscribe(_onPlayerTurnEnd);
+        _eventBus.Unsubscribe(_onDealingEnded);
+        _eventBus.Unsubscribe(_onDealingStarted);
+        _eventBus.Unsubscribe(_onMoneyChanged);
+        _eventBus.Unsubscribe(_onPlayerWin);
+        _eventBus.Unsubscribe(_onPlayerLose);
+        _eventBus.Unsubscribe(_onResetEndOfTurn);
+        _eventBus.Unsubscribe(_onShowBetMenu);
+        _eventBus.Unsubscribe(_onHideBetMenu);
+        _eventBus.Unsubscribe(_onPlayerDrawnCard);
     }
 
     private void SetButtonsOn(GameEventBase e)

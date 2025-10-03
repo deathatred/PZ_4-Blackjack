@@ -3,26 +3,28 @@ using UnityEngine;
 
 public class MoneyManager : IDisposable
 {
+    private readonly EventBus _eventBus;
     public int MoneyAmount { get; private set; } = 0;
     private int _currentBet = 0;
-    public MoneyManager()
+    public MoneyManager(EventBus eventBus)
     {
+        _eventBus = eventBus;
         MoneyAmount = 1000;
-        EventBus.Subscribe<DealerWinEvent>(DealerWin);
-        EventBus.Subscribe<PlayerWinEvent>(DealerLost);
+        _eventBus.Subscribe<DealerWinEvent>(DealerWin);
+        _eventBus.Subscribe<PlayerWinEvent>(DealerLost);
     }
 
     public void PlaceBet(int bet)
     {
         _currentBet = bet;
         MoneyAmount -= bet;
-        EventBus.Publish(new BettingEndedEvent());
+        _eventBus.Publish(new BettingEndedEvent());
     }
     public void PlayerWin()
     {
         MoneyAmount += _currentBet * 2;
         _currentBet = 0;
-        EventBus.Publish(new MoneyChangedEvent(MoneyAmount));
+        _eventBus.Publish(new MoneyChangedEvent(MoneyAmount));
     }
     public void PlayerLost()
     {
@@ -39,7 +41,7 @@ public class MoneyManager : IDisposable
 
     public void Dispose()
     {
-        EventBus.Unsubscribe<DealerWinEvent>(DealerWin);
-        EventBus.Unsubscribe<PlayerWinEvent>(DealerLost);
+        _eventBus.Unsubscribe<DealerWinEvent>(DealerWin);
+        _eventBus.Unsubscribe<PlayerWinEvent>(DealerLost);
     }
 }

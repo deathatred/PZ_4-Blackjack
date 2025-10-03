@@ -4,27 +4,29 @@ using Zenject;
 
 public class PlayerTurnState : GameStateBase
 {
+    private readonly EventBus _eventBus;
     private bool _playerTurnEnded = false;
     private bool _dealerWin = false;
     [Inject]
-    public PlayerTurnState(GameStateMachine fsm) : base(fsm)
+    public PlayerTurnState(GameStateMachine fsm, EventBus eventBus) : base(fsm)
     {
+        _eventBus = eventBus;
     }
 
     public override void Enter()
     {
         //Activate UI buttons
-        EventBus.Publish(new PlayerTurnStartedEvent());
-        EventBus.Subscribe<PushButtonPressedEvent>(PlayerTurnEnded);
-        EventBus.Subscribe<DealerWinEvent>(DealerWin);
+        _eventBus.Publish(new PlayerTurnStartedEvent());
+        _eventBus.Subscribe<PushButtonPressedEvent>(PlayerTurnEnded);
+        _eventBus.Subscribe<DealerWinEvent>(DealerWin);
     }
 
     public override void Exit()
     {
         Debug.Log("Player turn ended bruh");
-        EventBus.Publish(new PlayerTurnEndedEvent());
-        EventBus.Unsubscribe<PushButtonPressedEvent>(PlayerTurnEnded);
-        EventBus.Unsubscribe<DealerWinEvent>(DealerWin);
+        _eventBus.Publish(new PlayerTurnEndedEvent());
+        _eventBus.Unsubscribe<PushButtonPressedEvent>(PlayerTurnEnded);
+        _eventBus.Unsubscribe<DealerWinEvent>(DealerWin);
     }
 
     public override void Update()
