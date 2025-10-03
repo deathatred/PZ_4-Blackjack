@@ -2,9 +2,8 @@ using System.Runtime.CompilerServices;
 using UnityEngine;
 using Zenject;
 
-public class GameManager : MonoBehaviour
+public class GameManager
 {
-    public static GameManager Instance { get; private set; }
     private DeckManager _deckManager;
     private MoneyManager _moneyManager;
     private GameStateMachine _gameStateMachine;
@@ -22,25 +21,9 @@ public class GameManager : MonoBehaviour
         _gameStateMachine = gameStateMachine;
         _gameStateMachine.Init();
     }
-    public void Awake()
-    {
-        InitSingleton();
-    }
     public void Update()
     {
-        print(_gameStateMachine.CurrentGameState);
+        Debug.Log(_gameStateMachine.CurrentGameState);
         _gameStateMachine.StateUpdate();
-    }
-    private void InitSingleton()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject); 
-        }
-        else if (Instance != this)
-        {
-            Destroy(gameObject);
-        }
     }
 }

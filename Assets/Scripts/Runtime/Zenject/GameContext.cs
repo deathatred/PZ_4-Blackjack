@@ -16,6 +16,7 @@ public class GameContext : MonoInstaller
         Container.Bind<List<Canvas>>().FromInstance(_viewsList).AsTransient();
         Container.Bind<ViewManager>().FromNew().AsSingle().WithArguments(_viewsList).NonLazy();
         Container.Bind<GameStateFactory>().AsSingle();
-   
+        Container.Bind<GameManager>().AsSingle().NonLazy();
+
     }
 }
