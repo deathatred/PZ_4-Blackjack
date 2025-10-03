@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameOverState : GameStateBase
 {
@@ -12,6 +13,12 @@ public class GameOverState : GameStateBase
     public override void Enter()
     {
         _eventBus.Publish(new GameOverEvent());
+        SceneManager.sceneLoaded += SceneReloaded;
+    }
+
+    private void SceneReloaded(Scene arg0, LoadSceneMode arg1)
+    {
+        _fsm.ChangeState(GameState.GameStart);
     }
 
     public override void Exit()

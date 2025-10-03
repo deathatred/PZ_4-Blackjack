@@ -63,6 +63,7 @@ public class ViewManager: IDisposable
     }
     private void TryAgainPressed(GameEventBase e)
     {
+        //_eventBus.Dispose();
         Dispose();
         Scene currentScene = SceneManager.GetActiveScene();
         SceneManager.LoadScene(currentScene.name);

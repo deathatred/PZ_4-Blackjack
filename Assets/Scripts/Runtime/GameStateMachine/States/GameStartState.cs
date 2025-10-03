@@ -13,6 +13,7 @@ public class GameStartState : GameStateBase
 
     public override void Enter()
     {
+        Debug.Log("ented Start");
         _eventBus.Subscribe<PlayPressedEvent>(PlayPressed);
     }
 
@@ -23,10 +24,11 @@ public class GameStartState : GameStateBase
 
     public override void Update()
     {
-        if (_playPressed)
-        {
+        //Debug.Log(_playPressed);
+        //if (_playPressed)
+        //{
             _fsm.ChangeState(GameState.Betting);
-        }
+        //}
     }
     private void PlayPressed(GameEventBase e)
     {

@@ -59,6 +59,11 @@ public class GameViewUI : MonoBehaviour
         UnsubscribeFromEvents();
         UnbindButtons();
     }
+    private void OnDestroy()
+    {
+        UnsubscribeFromEvents();
+        UnbindButtons();
+    }
 
     private void BindButtons()
     {
@@ -124,6 +129,7 @@ public class GameViewUI : MonoBehaviour
         _eventBus.Unsubscribe(_onShowBetMenu);
         _eventBus.Unsubscribe(_onHideBetMenu);
         _eventBus.Unsubscribe(_onPlayerDrawnCard);
+        _eventBus.Unsubscribe(_onDealerDrawnCard);
     }
 
     private void SetButtonsOn(GameEventBase e)

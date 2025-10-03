@@ -6,6 +6,7 @@ public class EventBus : IDisposable
 {
     private readonly Dictionary<Type, List<Action<GameEventBase>>> _subscribers =
         new Dictionary<Type, List<Action<GameEventBase>>>();
+    private Dictionary<Delegate, Action<GameEventBase>> _wrappers = new();
     public void Publish(GameEventBase eventData)
     {
         var type = eventData.GetType();
@@ -25,6 +26,8 @@ public class EventBus : IDisposable
         }
     }
 
+  
+
     public void Subscribe<T>(Action<T> action) where T : GameEventBase
     {
         var type = typeof(T);
@@ -33,23 +36,25 @@ public class EventBus : IDisposable
             list = new List<Action<GameEventBase>>();
             _subscribers[type] = list;
         }
-        
+
         Action<GameEventBase> wrapper = e => action((T)e);
         list.Add(wrapper);
+        _wrappers[action] = wrapper;
     }
 
     public void Unsubscribe<T>(Action<T> action) where T : GameEventBase
     {
-        var type = typeof(T);
-        if (!_subscribers.TryGetValue(type, out var list)) return;
-
-        list.RemoveAll(wrapper =>
+        if (_wrappers.TryGetValue(action, out var wrapper))
         {
-            var del = wrapper.Target as Delegate;
-            return del != null && del.Method == action.Method && del.Target == action.Target;
-        });
+            var type = typeof(T);
+            if (_subscribers.TryGetValue(type, out var list))
+            {
+                list.Remove(wrapper);
+            }
+            _wrappers.Remove(action);
+        }
     }
-    
+
     public void Clear()
     {
         _subscribers.Clear();
