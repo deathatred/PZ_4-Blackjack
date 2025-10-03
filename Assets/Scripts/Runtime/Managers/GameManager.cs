@@ -17,9 +17,12 @@ public class GameManager
         _moneyManager = moneyManager;
         _viewManager = viewManager;
         _deckManager = deckManager;
-        _deckManager.Init();
         _gameStateMachine = gameStateMachine;
+<<<<<<< Updated upstream
         _gameStateMachine.Init();
+=======
+
+>>>>>>> Stashed changes
     }
     public void Update()
     {

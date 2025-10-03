@@ -20,7 +20,12 @@ public class DeckManager : MonoBehaviour, IDisposable
     {
         _eventBus = eventBus;
     }
-    
+    [Inject]
+    public void Initialize()
+    {
+        Init(); 
+    }
+
     public void Init()
     {
         foreach (var card in _cardDatabaseSO.CardsList)

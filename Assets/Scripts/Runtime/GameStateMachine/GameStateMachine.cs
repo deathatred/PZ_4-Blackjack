@@ -12,6 +12,11 @@ public class GameStateMachine
     {
         _gameStateFactory = stateFactory;
     }
+    [Inject]
+    public void Initialize()
+    {
+        Init(); // Zenject викликає після того, як всі інжекти готові
+    }
     public void Init()
     {
 
