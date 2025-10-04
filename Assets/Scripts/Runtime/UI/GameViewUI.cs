@@ -32,6 +32,7 @@ public class GameViewUI : MonoBehaviour
     private Action<MoneyChangedEvent> _onMoneyChanged;
     private Action<PlayerWinEvent> _onPlayerWin;
     private Action<DealerWinEvent> _onPlayerLose;
+    private Action<DrawEvent> _onPlayerDraw;
     private Action<BettingStartedEvent> _onResetEndOfTurn;
     private Action<BettingStartedEvent> _onShowBetMenu;
     private Action<BettingEndedEvent> _onHideBetMenu;
@@ -101,6 +102,7 @@ public class GameViewUI : MonoBehaviour
         _onHideBetMenu = e => HideBetMenu(e);
         _onPlayerDrawnCard = e => ChangePlayerScore(e);
         _onDealerDrawnCard = e => ChangeDealerScore(e);
+        _onPlayerDraw = e => _onPlayerDraw(e);
 
         _eventBus.Subscribe(_onPlayerTurnStart);
         _eventBus.Subscribe(_onPlayerTurnEnd);
@@ -114,6 +116,7 @@ public class GameViewUI : MonoBehaviour
         _eventBus.Subscribe(_onHideBetMenu);
         _eventBus.Subscribe(_onPlayerDrawnCard);
         _eventBus.Subscribe(_onDealerDrawnCard);
+        _eventBus.Subscribe(_onPlayerDraw);
     }
 
     private void UnsubscribeFromEvents()
@@ -130,6 +133,7 @@ public class GameViewUI : MonoBehaviour
         _eventBus.Unsubscribe(_onHideBetMenu);
         _eventBus.Unsubscribe(_onPlayerDrawnCard);
         _eventBus.Unsubscribe(_onDealerDrawnCard);
+        _eventBus.Unsubscribe(_onPlayerDraw);
     }
 
     private void SetButtonsOn(GameEventBase e)
@@ -161,6 +165,12 @@ public class GameViewUI : MonoBehaviour
         _endOfTurnObj.gameObject.SetActive(true);
         _endOfRoundText.text = "you win";
         _endOfRoundBackground.color = Color.green;
+    }
+    private void PlayerDrawRoundMsg(GameEventBase e)
+    {
+        _endOfTurnObj.gameObject.SetActive(true);
+        _endOfRoundText.text = "draw";
+        _endOfRoundBackground.color = Color.gray;
     }
 
     private void ResetComponentsAtTheEndOfTurn(GameEventBase e)

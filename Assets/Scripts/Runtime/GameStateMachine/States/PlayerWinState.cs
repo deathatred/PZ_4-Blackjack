@@ -6,11 +6,13 @@ using Zenject;
 public class PlayerWinState : GameStateBase
 {
     private readonly EventBus _eventBus;
-    private bool _isWaiting = false;    
+    private bool _isWaiting = false;  
+    private Dealer _dealer;
     [Inject]
-    public PlayerWinState(GameStateMachine fsm, EventBus eventBus) : base(fsm)
+    public PlayerWinState(GameStateMachine fsm,Dealer dealer, EventBus eventBus) : base(fsm)
     {
         _eventBus = eventBus;
+        _dealer = dealer;
     }
 
     public override void Enter()
@@ -29,6 +31,7 @@ public class PlayerWinState : GameStateBase
        if (!_isWaiting)
         {
             _isWaiting = true;
+            await _dealer.ShowCard();
             await UniTask.WaitForSeconds(2);
             _fsm.ChangeState(GameState.ResetingTable);
         }

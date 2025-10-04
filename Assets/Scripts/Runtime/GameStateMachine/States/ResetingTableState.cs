@@ -8,6 +8,7 @@ public class ResetingTableState : GameStateBase
     private DeckManager _deckManager;
     private MoneyManager _moneyManager;
     private bool _isWaiting = false;
+    private bool _isGameOver = false;
 
     private readonly EventBus _eventBus;
 
@@ -33,12 +34,12 @@ public class ResetingTableState : GameStateBase
 
     public override void Update()
     {
-        if (_moneyManager.MoneyAmount == 0)
+        if (_moneyManager.MoneyAmount == 0 && !_isGameOver)
         {
-            _fsm.ChangeState(GameState.GameOver);
+            GameOverAsync().Forget();
             return;
         }
-        if (!_isWaiting)
+        if (!_isWaiting && !_isGameOver)
         {
             _isWaiting = true;
             StartNextDealAsync().Forget();
@@ -49,5 +50,11 @@ public class ResetingTableState : GameStateBase
         await UniTask.WaitForSeconds(2f);
         _fsm.ChangeState(GameState.Betting);
         _isWaiting = false; 
+    }
+    private async UniTask GameOverAsync()
+    {
+        await UniTask.WaitForSeconds(2f);
+        _fsm.ChangeState(GameState.GameOver);
+        _isWaiting = true;
     }
 }

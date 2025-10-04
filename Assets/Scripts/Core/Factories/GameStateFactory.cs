@@ -35,6 +35,8 @@ public class GameStateFactory
                 return CreateState<PlayerWinState>();
             case GameState.DealerWin:
                 return CreateState<DealerWinState>();
+            case GameState.Draw:
+                return CreateState<DrawState>();
             case GameState.GameOver:
                 return CreateState<GameOverState>();
         }

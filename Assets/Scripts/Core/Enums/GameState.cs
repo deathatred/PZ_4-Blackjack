@@ -11,5 +11,6 @@ public enum GameState
     ResetingTable,
     PlayerWin,    
     DealerWin,              
+    Draw,
     GameOver
 }

@@ -12,6 +12,7 @@ public class MoneyManager : IDisposable
         MoneyAmount = 1000;
         _eventBus.Subscribe<DealerWinEvent>(DealerWin);
         _eventBus.Subscribe<PlayerWinEvent>(DealerLost);
+        _eventBus.Subscribe<DrawEvent>(GameDraw);
     }
 
     public void PlaceBet(int bet)
@@ -20,14 +21,19 @@ public class MoneyManager : IDisposable
         MoneyAmount -= bet;
         _eventBus.Publish(new BettingEndedEvent());
     }
-    public void PlayerWin()
+    private void PlayerWin()
     {
         MoneyAmount += _currentBet * 2;
         _currentBet = 0;
         _eventBus.Publish(new MoneyChangedEvent(MoneyAmount));
     }
-    public void PlayerLost()
+    private void PlayerLost()
     {
+        _currentBet = 0;
+    }
+    private void Draw()
+    {
+        MoneyAmount += _currentBet;
         _currentBet = 0;
     }
     private void DealerWin(GameEventBase e)
@@ -38,10 +44,16 @@ public class MoneyManager : IDisposable
     {
         PlayerWin();
     }
+    private void GameDraw(GameEventBase e)
+    {
+        Draw();
+    }
+   
 
     public void Dispose()
     {
         _eventBus.Unsubscribe<DealerWinEvent>(DealerWin);
         _eventBus.Unsubscribe<PlayerWinEvent>(DealerLost);
+        _eventBus.Unsubscribe<DrawEvent>(GameDraw);
     }
 }

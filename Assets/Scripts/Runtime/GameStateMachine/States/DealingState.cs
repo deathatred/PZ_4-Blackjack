@@ -30,7 +30,7 @@ public class DealingState : GameStateBase
     {
         if (_playerBlackjack)
         {
-            _fsm.ChangeState(GameState.DealerTurn);
+            _fsm.ChangeState(GameState.PlayerWin);
         }
         if (_dealingFinished)
         {

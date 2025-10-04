@@ -35,6 +35,13 @@ public class ComparingHandsState : GameStateBase
     {
         int playerRes = _player.Hand.CalculateScore();
         int dealerRes = _dealer.Hand.CalculateScore();
+        if (playerRes == dealerRes)
+        {
+            Debug.Log("player wins");
+            _eventBus.Publish(new PlayerWinEvent());
+            await UniTask.WaitForSeconds(2.5f);
+            _fsm.ChangeState(GameState.PlayerWin);
+        }
         if (playerRes > dealerRes)
         {
             Debug.Log("player wins");

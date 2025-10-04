@@ -53,7 +53,7 @@ public class DealerTurnState : GameStateBase
     private async UniTask StartNextDealAsync()
     {
         await UniTask.WaitForSeconds(1f);
-        _fsm.ChangeState(GameState.DealerWin);
+        _fsm.ChangeState(GameState.ComparingHands);
         _isWaiting = false;
     }
 }
