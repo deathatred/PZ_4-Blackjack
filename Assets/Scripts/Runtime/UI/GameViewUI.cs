@@ -60,11 +60,7 @@ public class GameViewUI : MonoBehaviour
         UnsubscribeFromEvents();
         UnbindButtons();
     }
-    private void OnDestroy()
-    {
-        UnsubscribeFromEvents();
-        UnbindButtons();
-    }
+
 
     private void BindButtons()
     {
