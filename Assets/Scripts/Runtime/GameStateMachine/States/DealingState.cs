@@ -16,7 +16,6 @@ public class DealingState : GameStateBase
     }
     public override void Enter()
     {
-        Debug.Log(_deckManager.GetDeckCount());
         _eventBus.Publish(new DealingStartedEvent());
         _eventBus.Subscribe<DealingFinishedEvent>(DealingFinished);
         _eventBus.Subscribe<PlayerBlackjackEvent>(PlayerBlackjack);

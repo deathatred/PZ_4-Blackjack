@@ -7,6 +7,36 @@
       "dependencies": {},
       "hash": "ec9204d381eb406a8f6e68fd67429a96ca6c5322"
     },
+    "com.google.external-dependency-manager": {
+      "version": "file:C:/Users/User/Desktop/GameProjects/Homework14/Packages/GoogleLLC/com.google.external-dependency-manager-1.2.186.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {}
+    },
+    "com.google.firebase.app": {
+      "version": "file:C:/Users/User/Desktop/GameProjects/Homework14/Packages/GoogleLLC/com.google.firebase.app-13.2.0.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {
+        "com.google.external-dependency-manager": "1.2.186"
+      }
+    },
+    "com.google.firebase.auth": {
+      "version": "file:C:/Users/User/Desktop/GameProjects/Homework14/Packages/GoogleLLC/com.google.firebase.auth-13.2.0.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {
+        "com.google.firebase.app": "13.2.0"
+      }
+    },
+    "com.google.firebase.database": {
+      "version": "file:C:/Users/User/Desktop/GameProjects/Homework14/Packages/GoogleLLC/com.google.firebase.database-13.2.0.tgz",
+      "depth": 0,
+      "source": "local-tarball",
+      "dependencies": {
+        "com.google.firebase.auth": "13.2.0"
+      }
+    },
     "com.unity.2d.sprite": {
       "version": "1.0.0",
       "depth": 0,

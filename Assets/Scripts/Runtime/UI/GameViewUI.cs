@@ -98,7 +98,7 @@ public class GameViewUI : MonoBehaviour
         _onHideBetMenu = e => HideBetMenu(e);
         _onPlayerDrawnCard = e => ChangePlayerScore(e);
         _onDealerDrawnCard = e => ChangeDealerScore(e);
-        _onPlayerDraw = e => _onPlayerDraw(e);
+        _onPlayerDraw = e => PlayerDrawRoundMsg(e);
 
         _eventBus.Subscribe(_onPlayerTurnStart);
         _eventBus.Subscribe(_onPlayerTurnEnd);

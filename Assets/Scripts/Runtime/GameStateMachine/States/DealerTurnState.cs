@@ -18,13 +18,13 @@ public class DealerTurnState : GameStateBase
     {
         _eventBus.Publish(new DealerTurnStartedEvent());
         _eventBus.Subscribe<DealerTurnEndedEvent>(EndDealerTurn);
-        _eventBus.Subscribe<PlayerWinEvent>(DealerLost);
+        _eventBus.Subscribe<DealerOverflowEvent>(DealerLost);
     }
 
     public override void Exit()
     {
         _eventBus.Unsubscribe<DealerTurnEndedEvent>(EndDealerTurn);
-        _eventBus.Unsubscribe<PlayerWinEvent>(DealerLost);
+        _eventBus.Unsubscribe<DealerOverflowEvent>(DealerLost);
     }
 
     public override void Update()

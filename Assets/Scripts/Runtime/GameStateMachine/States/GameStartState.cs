@@ -24,7 +24,6 @@ public class GameStartState : GameStateBase
 
     public override void Update()
     {
-        Debug.Log(_playPressed);
         if (_playPressed)
         {
             _fsm.ChangeState(GameState.Betting);

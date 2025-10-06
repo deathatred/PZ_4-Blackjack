@@ -1,6 +1,10 @@
 {
   "dependencies": {
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
+    "com.google.external-dependency-manager": "file:C:/Users/User/Desktop/GameProjects/Homework14/Packages/GoogleLLC/com.google.external-dependency-manager-1.2.186.tgz",
+    "com.google.firebase.app": "file:C:/Users/User/Desktop/GameProjects/Homework14/Packages/GoogleLLC/com.google.firebase.app-13.2.0.tgz",
+    "com.google.firebase.auth": "file:C:/Users/User/Desktop/GameProjects/Homework14/Packages/GoogleLLC/com.google.firebase.auth-13.2.0.tgz",
+    "com.google.firebase.database": "file:C:/Users/User/Desktop/GameProjects/Homework14/Packages/GoogleLLC/com.google.firebase.database-13.2.0.tgz",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.ai.navigation": "2.0.6",
     "com.unity.collab-proxy": "2.9.3",

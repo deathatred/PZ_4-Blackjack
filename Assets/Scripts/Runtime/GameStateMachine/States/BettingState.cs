@@ -22,7 +22,6 @@ public class BettingState : GameStateBase
 
     public override void Update()
     {
-        Debug.Log(_bettingEnded);
         if (_bettingEnded)
         {
             Debug.Log("Bet placed, changing state to Dealing");

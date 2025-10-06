@@ -18,15 +18,15 @@ public class PlayerTurnState : GameStateBase
         //Activate UI buttons
         _eventBus.Publish(new PlayerTurnStartedEvent());
         _eventBus.Subscribe<PushButtonPressedEvent>(PlayerTurnEnded);
-        _eventBus.Subscribe<DealerWinEvent>(DealerWin);
+        _eventBus.Subscribe<PlayerOverflowEvent>(DealerWin);
     }
 
     public override void Exit()
     {
-        Debug.Log("Player turn ended bruh");
+
         _eventBus.Publish(new PlayerTurnEndedEvent());
         _eventBus.Unsubscribe<PushButtonPressedEvent>(PlayerTurnEnded);
-        _eventBus.Unsubscribe<DealerWinEvent>(DealerWin);
+        _eventBus.Unsubscribe<PlayerOverflowEvent>(DealerWin);
     }
 
     public override void Update()
@@ -44,7 +44,7 @@ public class PlayerTurnState : GameStateBase
     {
        _playerTurnEnded = true; 
     }
-    private void DealerWin(DealerWinEvent e)
+    private void DealerWin(PlayerOverflowEvent e)
     {
         _dealerWin = true;
     }

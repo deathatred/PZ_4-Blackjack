@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
         if (Hand.CalculateScore() > 21)
         {
             print("Player lost");
-            _eventBus.Publish(new DealerWinEvent());
+            _eventBus.Publish(new PlayerOverflowEvent());
         }
     }
     private void SubscribeToEvents()

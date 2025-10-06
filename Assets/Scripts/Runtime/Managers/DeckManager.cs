@@ -54,6 +54,7 @@ public class DeckManager : MonoBehaviour, IDisposable
 
         Card card = _currentDeck[0];
         _currentDeck.RemoveAt(0);
+
         return card;
     }
     public void ReturnCard(Card card)

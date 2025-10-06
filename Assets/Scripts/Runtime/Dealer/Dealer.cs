@@ -92,7 +92,7 @@ public class Dealer : MonoBehaviour
         else
         {
             print("dealer lost, player wins ");
-            _eventBus.Publish(new PlayerWinEvent());
+            _eventBus.Publish(new DealerOverflowEvent());
         }
     }
 }

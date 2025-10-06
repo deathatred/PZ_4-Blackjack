@@ -18,20 +18,13 @@ public class ViewManager: IDisposable
         _views = new List<Canvas>();
         _views = canvases;
         _eventBus = eventBus;
-        Debug.Log("New ViewManager created with canvases: " + _views.Count);
-        foreach (var view in _views)
-        {
-            Debug.Log(view.ToString());
-        }
         SubscribeToEvents();
         ChangeCanvas(MENU_VIEW_ID);
     }
     public void ChangeCanvas(int id)
     {
-        Debug.LogWarning($"Elements in list: {_views.Count}");
         if (id >= _views.Count)
         {
-            Debug.LogError($"This canvas id {id}, does not exist");
             return;
         }
         foreach (Canvas canvas in _views)
@@ -45,14 +38,12 @@ public class ViewManager: IDisposable
     }
     private void SubscribeToEvents()
     {
-        Debug.LogWarning("Call Subscribe!");
         _eventBus.Subscribe<PlayPressedEvent>(PlayPressed);
         _eventBus.Subscribe<TryAgainPressedEvent>(TryAgainPressed);
         _eventBus.Subscribe<GameOverEvent>(GameOverDel);
     }
     private void UnsubscribeFromEvents()
     {
-        Debug.LogWarning("Call Unsubscribe!");
         _eventBus.Unsubscribe<PlayPressedEvent>(PlayPressed);
         _eventBus.Unsubscribe<TryAgainPressedEvent>(TryAgainPressed);
         _eventBus.Unsubscribe<GameOverEvent>(GameOverDel);

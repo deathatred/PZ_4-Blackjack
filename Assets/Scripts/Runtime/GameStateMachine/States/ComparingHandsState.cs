@@ -37,23 +37,21 @@ public class ComparingHandsState : GameStateBase
         int dealerRes = _dealer.Hand.CalculateScore();
         if (playerRes == dealerRes)
         {
-            Debug.Log("player wins");
-            _eventBus.Publish(new PlayerWinEvent());
-            await UniTask.WaitForSeconds(2.5f);
-            _fsm.ChangeState(GameState.PlayerWin);
+            Debug.Log("draw");
+            await UniTask.WaitForSeconds(0.5f);
+            _fsm.ChangeState(GameState.Draw);
         }
+        else 
         if (playerRes > dealerRes)
         {
             Debug.Log("player wins");
-            _eventBus.Publish(new PlayerWinEvent());
-            await UniTask.WaitForSeconds(2.5f);
+            await UniTask.WaitForSeconds(0.5f);
             _fsm.ChangeState(GameState.PlayerWin);
         }
         else if (dealerRes > playerRes)
         {
             Debug.Log("player lost(");
-            _eventBus.Publish(new DealerWinEvent());
-            await UniTask.WaitForSeconds(2.5f);
+            await UniTask.WaitForSeconds(0.5f);
             _fsm.ChangeState(GameState.DealerWin);
         }
 

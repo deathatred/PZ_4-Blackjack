@@ -15,7 +15,6 @@ public class GameManager : MonoBehaviour
     }
     public void Update()
     {
-        Debug.Log(_gameStateMachine.CurrentGameState);
         _gameStateMachine.StateUpdate();
     }
 }
