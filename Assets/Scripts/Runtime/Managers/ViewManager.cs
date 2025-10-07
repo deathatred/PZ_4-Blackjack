@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
@@ -9,6 +10,7 @@ public class ViewManager: IDisposable
     private const int GAME_VIEW_ID = 0;
     private const int GAME_END_VIEW_ID = 1;
     private const int MENU_VIEW_ID = 2;
+    private const int HISTORY_VIEW_ID = 3;
 
     private readonly List<Canvas> _views;
     private readonly EventBus _eventBus;
@@ -41,16 +43,28 @@ public class ViewManager: IDisposable
         _eventBus.Subscribe<PlayPressedEvent>(PlayPressed);
         _eventBus.Subscribe<TryAgainPressedEvent>(TryAgainPressed);
         _eventBus.Subscribe<GameOverEvent>(GameOverDel);
+        _eventBus.Subscribe<HistoryPressedEvent>(HistoryPressed);
+        _eventBus.Subscribe<BackPressedEvent>(BackPressed);
     }
     private void UnsubscribeFromEvents()
     {
         _eventBus.Unsubscribe<PlayPressedEvent>(PlayPressed);
         _eventBus.Unsubscribe<TryAgainPressedEvent>(TryAgainPressed);
         _eventBus.Unsubscribe<GameOverEvent>(GameOverDel);
+        _eventBus.Unsubscribe<HistoryPressedEvent>(HistoryPressed);
+        _eventBus.Unsubscribe<BackPressedEvent>(BackPressed);
     }
     private void PlayPressed(GameEventBase e)
     {
         ChangeCanvas(GAME_VIEW_ID);
+    }
+    private void HistoryPressed(GameEventBase e)
+    {
+        ChangeCanvas(HISTORY_VIEW_ID);
+    }
+    private void BackPressed(GameEventBase e)
+    {
+        ChangeCanvas(MENU_VIEW_ID);
     }
     private void TryAgainPressed(GameEventBase e)
     {

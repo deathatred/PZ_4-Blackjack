@@ -5,6 +5,7 @@ using Zenject;
 public class MainMenuViewUI : MonoBehaviour
 {
     [SerializeField] private Button _playButton;
+    [SerializeField] private Button _historyButton;
     private EventBus _eventBus;
 
     [Inject]
@@ -23,13 +24,19 @@ public class MainMenuViewUI : MonoBehaviour
     private void BindButtons()
     {
         _playButton.onClick.AddListener(PlayButtonPress);
+        _historyButton.onClick.AddListener(HistoryButtonPress);
     }
     private void UnbindButtons()
     {
         _playButton.onClick.RemoveListener(PlayButtonPress);
+        _historyButton.onClick.RemoveListener(HistoryButtonPress);
     }
     private void PlayButtonPress()
     {
         _eventBus.Publish(new PlayPressedEvent());
+    }
+    private void HistoryButtonPress()
+    {
+        _eventBus.Publish(new HistoryPressedEvent());
     }
 }
