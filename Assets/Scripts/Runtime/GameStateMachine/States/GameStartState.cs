@@ -13,7 +13,6 @@ public class GameStartState : GameStateBase
 
     public override void Enter()
     {
-        Debug.Log("ented Start");
         _eventBus.Subscribe<PlayPressedEvent>(PlayPressed);
     }
 

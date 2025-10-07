@@ -42,7 +42,6 @@ public class GameHistoryScrollView : MonoBehaviour
         for (int i = results.Count - 1; i >= 0; i--)
         {
             GameResult gameResult = results[i];
-            Debug.Log("ONE");
             RoundHistoryTabSingle roundHistoryTabSingle = Instantiate(_roundHistoryTabSingle, _content);
             roundHistoryTabSingle.Init(gameResult);
         }
