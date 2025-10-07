@@ -45,6 +45,7 @@ public class ViewManager: IDisposable
         _eventBus.Subscribe<GameOverEvent>(GameOverDel);
         _eventBus.Subscribe<HistoryPressedEvent>(HistoryPressed);
         _eventBus.Subscribe<BackPressedEvent>(BackPressed);
+        _eventBus.Subscribe<MenuButtonPressedEvent>(MenuPressed);
     }
     private void UnsubscribeFromEvents()
     {
@@ -53,7 +54,9 @@ public class ViewManager: IDisposable
         _eventBus.Unsubscribe<GameOverEvent>(GameOverDel);
         _eventBus.Unsubscribe<HistoryPressedEvent>(HistoryPressed);
         _eventBus.Unsubscribe<BackPressedEvent>(BackPressed);
+        _eventBus.Unsubscribe<MenuButtonPressedEvent>(MenuPressed);
     }
+    private void MenuPressed(GameEventBase e) => ChangeCanvas(MENU_VIEW_ID);
     private void PlayPressed(GameEventBase e)
     {
         ChangeCanvas(GAME_VIEW_ID);

@@ -19,6 +19,7 @@ public class GameViewUI : MonoBehaviour
     [SerializeField] private Button _plusButton;
     [SerializeField] private Button _minusButton;
     [SerializeField] private Button _placeBetButton;
+    [SerializeField] private Button _menuButton;
 
     [Inject] private MoneyManager _moneyManager;
 
@@ -69,6 +70,7 @@ public class GameViewUI : MonoBehaviour
         _plusButton.onClick.AddListener(AddMoneyToBet);
         _minusButton.onClick.AddListener(RemoveMoneyFromBet);
         _placeBetButton.onClick.AddListener(PlaceBet);
+        _menuButton.onClick.AddListener(MenuPressed);
     }
 
     private void UnbindButtons()
@@ -78,11 +80,12 @@ public class GameViewUI : MonoBehaviour
         _plusButton.onClick.RemoveListener(AddMoneyToBet);
         _minusButton.onClick.RemoveListener(RemoveMoneyFromBet);
         _placeBetButton.onClick.RemoveListener(PlaceBet);
+        _menuButton.onClick.RemoveListener(MenuPressed);
     }
 
     private void TakePressed() => _eventBus.Publish(new TakeButtonPressedEvent());
     private void PushPressed() => _eventBus.Publish(new PushButtonPressedEvent());
-
+    private void MenuPressed() => _eventBus.Publish(new MenuButtonPressedEvent());
     private void SubscribeToEvents()
     {
         _onPlayerTurnStart = e => SetButtonsOn(e);

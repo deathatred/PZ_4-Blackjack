@@ -57,7 +57,8 @@ public class GameHistoryScrollView : MonoBehaviour
     }
     private void AddHistoryTabSingle(RoundEndedEvent e)
     {
-        Instantiate(_roundHistoryTabSingle, _content);
-        _roundHistoryTabSingle.Init(e.GameResult);
+        RoundHistoryTabSingle tabSingle = Instantiate(_roundHistoryTabSingle, _content);
+        tabSingle.transform.SetSiblingIndex(0);
+        tabSingle.Init(e.GameResult);
     }
 }

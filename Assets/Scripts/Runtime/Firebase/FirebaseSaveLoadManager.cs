@@ -151,7 +151,7 @@ public class FirebaseSaveLoadManager
         {
             Debug.LogError($"Error while loading all results: {ex}");
         }
-
+        results.Sort((a, b) => a.RoundNumber.CompareTo(b.RoundNumber));
         return results;
     }
     public async UniTask ClearAllDataFromFirebaseAsync(CancellationTokenSource cts = default)
