@@ -1595,6 +1595,18 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9149181657081099682, guid: e43ec685ad4266e4a99c883109c160aa, type: 3}
+      propertyPath: m_Colors.m_NormalColor.b
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9149181657081099682, guid: e43ec685ad4266e4a99c883109c160aa, type: 3}
+      propertyPath: m_Colors.m_NormalColor.g
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9149181657081099682, guid: e43ec685ad4266e4a99c883109c160aa, type: 3}
+      propertyPath: m_Colors.m_NormalColor.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9218176118889411069, guid: e43ec685ad4266e4a99c883109c160aa, type: 3}
       propertyPath: m_Name
       value: 'HistoryTabView[Canvas]'
