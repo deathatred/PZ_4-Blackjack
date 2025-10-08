@@ -1,5 +1,6 @@
 ﻿using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using Zenject;
 
@@ -12,24 +13,31 @@ public class GameHistoryScrollView : MonoBehaviour
     [Inject] private SaveManager _saveManager;
     [Inject] private FirebaseManager _firebaseManager;
 
+    private CancellationTokenSource _cts = new CancellationTokenSource();
+
+    private void OnEnable()
+    {
+        _cts = new CancellationTokenSource();
+    }
     private void Start()
     {
-        InitAsync().Forget();
+        InitAsync(_cts).Forget(ex => Debug.LogWarning($"InitAsync failed: {ex.Message}"));
         SubscribeToEvents();
     }
     private void OnDisable()
     {
         UnSubscribeFromEvents();
+        _cts.Cancel();
     }
 
-    private async UniTask InitAsync()
+    private async UniTask InitAsync(CancellationTokenSource _cts)
     {
         float timeout = 10f;
         float timer = 0f;
 
         while (!_firebaseManager.IsReady)
         {
-            await UniTask.Yield(); 
+            await UniTask.Yield(_cts.Token); 
             timer += Time.deltaTime;
 
             if (timer >= timeout)
@@ -37,8 +45,14 @@ public class GameHistoryScrollView : MonoBehaviour
                 return; 
             }
         }
-        List<GameResult> results = await _firebaseManager.LoadAllGamesDataAsync();
-
+        var task = _firebaseManager.LoadAllGamesDataAsync();
+        await UniTask.WhenAny(task, UniTask.WaitUntilCanceled(_cts.Token));
+        if (_cts.IsCancellationRequested)
+        {
+            Debug.Log("Loading canceled");
+            return;
+        }
+       List<GameResult> results = await task;
         for (int i = results.Count - 1; i >= 0; i--)
         {
             GameResult gameResult = results[i];
