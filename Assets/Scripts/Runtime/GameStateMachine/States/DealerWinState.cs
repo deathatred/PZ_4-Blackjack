@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using System.Threading;
 using UnityEngine;
 using Zenject;
 
@@ -7,6 +8,7 @@ public class DealerWinState : GameStateBase
     private Dealer _dealer;
     private readonly EventBus _eventBus;
     private bool _flippedCard;
+    private CancellationTokenSource _cts = new CancellationTokenSource();
 
     [Inject]
     public DealerWinState(Dealer dealer, GameStateMachine fsm, EventBus eventBus) : base(fsm)
@@ -23,7 +25,7 @@ public class DealerWinState : GameStateBase
 
     public override void Exit()
     {
-
+        _cts.Cancel();
     }
 
     public override void Update()
@@ -35,7 +37,7 @@ public class DealerWinState : GameStateBase
     }
     public async UniTask WaitToFlipCard()
     {
-        await _dealer.ShowCard();
+        await _dealer.ShowCard(_cts);
         await UniTask.WaitForSeconds(2f);
         _flippedCard = true;
     }

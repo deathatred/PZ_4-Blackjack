@@ -9,17 +9,13 @@ public class Card : MonoBehaviour
     [Inject] private DeckManager _deckManager;
     [SerializeField] private SpriteRenderer _frontRenderer;
     [SerializeField] private SpriteRenderer _backRenderer;
-
-    private CancellationTokenSource _cts = new CancellationTokenSource();
-
     public bool IsFlipped { get; private set; } = false;
     private Quaternion _faceDownRotation = Quaternion.Euler(-90f, 0f, -180f);
     private Quaternion _faceUpRotation = Quaternion.Euler(90f, 180f, -180f);
     private CardDataSO _data;
 
     private void OnDestroy()
-    {
-        _cts.Cancel();                 
+    {               
         DOTween.Kill(gameObject);      
     }
 
@@ -31,7 +27,7 @@ public class Card : MonoBehaviour
         _backRenderer.sprite = data.BackImage;
     }
 
-    public async UniTask DrawFromDeck(Vector3 targetPosition, bool flip = true, float duration = 1f, float rotationsPerSecond = 2f)
+    public async UniTask DrawFromDeck(Vector3 targetPosition,CancellationTokenSource _cts, bool flip = true, float duration = 1f, float rotationsPerSecond = 2f)
     {
         int highSortOrder = 100;
         SetSortingOrder(highSortOrder);
@@ -60,13 +56,13 @@ public class Card : MonoBehaviour
 
         if (flip)
         {
-            await Flip();
+            await Flip(_cts);
         }
     }
 
-    public async UniTask ReturnToDeck(float duration = 1f)
+    public async UniTask ReturnToDeck(CancellationTokenSource _cts,float duration = 1f)
     {
-        await Flip();
+        await Flip(_cts);
 
         int highSortOrder = 100;
         SetSortingOrder(highSortOrder);
@@ -80,7 +76,9 @@ public class Card : MonoBehaviour
         await moveTween.AsyncWaitForCompletion().AsUniTask().AttachExternalCancellation(_cts.Token);
     }
 
-    public async UniTask Move(Vector3 targetPosition, int sortingOrder, float duration = 0.25f)
+    public async UniTask Move(Vector3 targetPosition, int sortingOrder,
+        CancellationTokenSource _cts,
+        float duration = 0.25f)
     {
         SetSortingOrder(sortingOrder);
 
@@ -91,7 +89,7 @@ public class Card : MonoBehaviour
         await moveTween.AsyncWaitForCompletion().AsUniTask().AttachExternalCancellation(_cts.Token);
     }
 
-    public async UniTask Flip()
+    public async UniTask Flip(CancellationTokenSource _cts)
     {
         IsFlipped = !IsFlipped;
         Quaternion targetRotation = IsFlipped ? _faceUpRotation : _faceDownRotation;

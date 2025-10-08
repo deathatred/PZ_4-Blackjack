@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using Zenject;
 
@@ -10,6 +11,7 @@ public class PlayerController : MonoBehaviour
     private float spacing = 2f;
     private DeckManager _deckManager;
     private EventBus _eventBus;
+    private CancellationTokenSource _cts = new CancellationTokenSource();
     public Hand Hand { get; private set; }
 
     [Inject]
@@ -27,6 +29,7 @@ public class PlayerController : MonoBehaviour
     private void OnDisable()
     {
         UnsubscribeFromEvents();
+        _cts.Cancel();
     }
     private async UniTask TakeFirstTurnAsync()
     {
@@ -50,12 +53,12 @@ public class PlayerController : MonoBehaviour
         if (card == null) { Debug.Log(_deckManager.GetDeckCount() + "count"); return; }
         _eventBus.Publish(new DealingCardsToPlayerStartedEvent());
         Hand.AddCard(card);
-        await card.DrawFromDeck(handAnchor.position);
+        await card.DrawFromDeck(handAnchor.position, _cts);
         Hand.UpdateHandLayout(handAnchor, spacing);
         _eventBus.Publish(new PlayerDrawnCardEvent(Hand.CalculateScore()));
         _eventBus.Publish(new DealingCardsToPlayerEndedEvent());
     }
-    private async UniTask TakeCardTurn()
+    private async UniTask TakeCardTurnAsync()
     {
         await TakeCardAsync();
         if (Hand.CalculateScore() == 21)
@@ -87,6 +90,6 @@ public class PlayerController : MonoBehaviour
     }
     private void TakeTurn(TakeButtonPressedEvent e)
     {
-        TakeCardTurn().Forget();
+        TakeCardTurnAsync().Forget();
     }
 }

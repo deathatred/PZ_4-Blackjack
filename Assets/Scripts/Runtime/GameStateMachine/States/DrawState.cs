@@ -13,7 +13,7 @@ public class DrawState : GameStateBase
     public override void Enter()
     {
         _eventBus.Publish(new DrawEvent());
-        StartReseting().Forget();
+        StartResetingAsync().Forget();
 
     }
     public override void Exit()
@@ -26,7 +26,7 @@ public class DrawState : GameStateBase
   
     }
 
-    private async UniTask StartReseting()
+    private async UniTask StartResetingAsync()
     {
         await UniTask.WaitForSeconds(2f);
         _fsm.ChangeState(GameState.ResetingTable);

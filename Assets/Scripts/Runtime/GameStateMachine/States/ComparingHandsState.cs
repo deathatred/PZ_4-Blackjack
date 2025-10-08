@@ -1,4 +1,6 @@
 using Cysharp.Threading.Tasks;
+using System;
+using System.Threading;
 using UnityEngine;
 using Zenject;
 
@@ -7,6 +9,7 @@ public class ComparingHandsState : GameStateBase
     private PlayerController _player;
     private Dealer _dealer;
     private readonly EventBus _eventBus;
+    private CancellationTokenSource _cts = new CancellationTokenSource();
 
     [Inject]
     public ComparingHandsState(GameStateMachine fsm, PlayerController player, Dealer dealer, EventBus eventBus)
@@ -17,9 +20,9 @@ public class ComparingHandsState : GameStateBase
         _eventBus = eventBus;
     }
 
-    public async override void Enter()
+    public override void Enter()
     {
-        await CompareScores();
+        CompareScoresAsync(_cts).Forget();
     }
 
     public override void Exit()
@@ -31,29 +34,35 @@ public class ComparingHandsState : GameStateBase
     {
 
     }
-    private async UniTask CompareScores()
+    private async UniTask CompareScoresAsync(CancellationTokenSource _cts)
     {
-        int playerRes = _player.Hand.CalculateScore();
-        int dealerRes = _dealer.Hand.CalculateScore();
-        if (playerRes == dealerRes)
+        try
         {
-            Debug.Log("draw");
-            await UniTask.WaitForSeconds(0.5f);
-            _fsm.ChangeState(GameState.Draw);
+            int playerRes = _player.Hand.CalculateScore();
+            int dealerRes = _dealer.Hand.CalculateScore();
+            if (playerRes == dealerRes)
+            {
+                Debug.Log("draw");
+                await UniTask.WaitForSeconds(0.5f).AttachExternalCancellation(_cts.Token);
+                _fsm.ChangeState(GameState.Draw);
+            }
+            else
+            if (playerRes > dealerRes)
+            {
+                Debug.Log("player wins");
+                await UniTask.WaitForSeconds(0.5f).AttachExternalCancellation(_cts.Token);
+                _fsm.ChangeState(GameState.PlayerWin);
+            }
+            else if (dealerRes > playerRes)
+            {
+                Debug.Log("player lost(");
+                await UniTask.WaitForSeconds(0.5f).AttachExternalCancellation(_cts.Token);
+                _fsm.ChangeState(GameState.DealerWin);
+            }
         }
-        else 
-        if (playerRes > dealerRes)
+        catch (OperationCanceledException)
         {
-            Debug.Log("player wins");
-            await UniTask.WaitForSeconds(0.5f);
-            _fsm.ChangeState(GameState.PlayerWin);
+            Debug.LogWarning("Comparing Scores Canceled");
         }
-        else if (dealerRes > playerRes)
-        {
-            Debug.Log("player lost(");
-            await UniTask.WaitForSeconds(0.5f);
-            _fsm.ChangeState(GameState.DealerWin);
-        }
-
     }
 }

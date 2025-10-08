@@ -44,7 +44,7 @@ public class MoneyManager : IDisposable
     //    }
     //    catch (Exception ex)
     //    {
-    //        Debug.LogWarning($"MoneyManager Init failed. Reason: {ex}");
+    //        Debug.LogWarning($"MoneyManager InitAsync failed. Reason: {ex}");
     //        MoneyAmount = PlayerPrefs.GetInt("MoneyAmount", 1000);
     //    }
 
@@ -75,7 +75,7 @@ public class MoneyManager : IDisposable
         }
         catch (Exception ex)
         {
-            Debug.LogWarning($"MoneyManager Init failed Reason: {ex.Message}");
+            Debug.LogWarning($"MoneyManager InitAsync failed Reason: {ex.Message}");
             MoneyAmount = PlayerPrefs.GetInt("MoneyAmount", 1000);
         }
 

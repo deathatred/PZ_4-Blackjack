@@ -61,11 +61,11 @@ public class FirebaseBootstrap
         }
         catch (OperationCanceledException)
         {
-            Debug.LogError("FB Init cancelled");
+            Debug.LogError("FB InitAsync cancelled");
         }
         catch (Exception ex)
         {
-            Debug.LogError($"FB Init error {ex}");
+            Debug.LogError($"FB InitAsync error {ex}");
         }
     }
 }

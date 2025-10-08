@@ -14,7 +14,7 @@ public class GameHistoryScrollView : MonoBehaviour
 
     private void Start()
     {
-        Init().Forget();
+        InitAsync().Forget();
         SubscribeToEvents();
     }
     private void OnDisable()
@@ -22,7 +22,7 @@ public class GameHistoryScrollView : MonoBehaviour
         UnSubscribeFromEvents();
     }
 
-    private async UniTask Init()
+    private async UniTask InitAsync()
     {
         float timeout = 10f;
         float timer = 0f;
