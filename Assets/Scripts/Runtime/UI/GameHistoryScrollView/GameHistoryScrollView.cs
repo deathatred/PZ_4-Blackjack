@@ -45,14 +45,12 @@ public class GameHistoryScrollView : MonoBehaviour
                 return; 
             }
         }
-        var task = _firebaseManager.LoadAllGamesDataAsync();
-        await UniTask.WhenAny(task, UniTask.WaitUntilCanceled(_cts.Token));
         if (_cts.IsCancellationRequested)
         {
-            Debug.Log("Loading canceled");
             return;
         }
-       List<GameResult> results = await task;
+        var task = _firebaseManager.LoadAllGamesDataAsync();
+        List<GameResult> results = await task;
         for (int i = results.Count - 1; i >= 0; i--)
         {
             GameResult gameResult = results[i];

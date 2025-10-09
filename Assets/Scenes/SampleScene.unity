@@ -1611,6 +1611,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: 'HistoryTabView[Canvas]'
       objectReference: {fileID: 0}
+    - target: {fileID: 9218176118889411069, guid: e43ec685ad4266e4a99c883109c160aa, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1709,9 +1713,81 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4214317915829071285, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4214317915829071285, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4214317915829071285, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4214317915829071285, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4214317915829071285, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -250
+      objectReference: {fileID: 0}
+    - target: {fileID: 4739219908953946212, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_Pivot.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4739219908953946212, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4739219908953946212, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4739219908953946212, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4739219908953946212, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4739219908953946212, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4739219908953946212, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4739219908953946212, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 350
+      objectReference: {fileID: 0}
     - target: {fileID: 7404030945900973232, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
       propertyPath: m_Name
       value: 'GameView[Canvas]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 9185038093701411603, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_Pivot.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9185038093701411603, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9185038093701411603, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9185038093701411603, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9185038093701411603, guid: 157a873f31e943f4b8adeb0cc6c822e8, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 400
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

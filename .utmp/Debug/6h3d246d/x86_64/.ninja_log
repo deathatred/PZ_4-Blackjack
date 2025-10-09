@@ -1,0 +1,10 @@
+# ninja log v5
+13	1224	7817153171949179	GameActivity/CMakeFiles/game.dir/UGAInputKeyEvent.cpp.o	ec87d872e039dc83
+4	1232	7817153171983655	GameActivity/CMakeFiles/game.dir/UGAConfiguration.cpp.o	9009eb908cbd1b68
+16	1234	7817153172047382	GameActivity/CMakeFiles/game.dir/UGAEntry.cpp.o	91645d9857a10f3
+24	1241	7817153172150206	GameActivity/CMakeFiles/game.dir/UGAInputMotionEvent.cpp.o	7ee06fade6414fa7
+9	1259	7817153172385085	GameActivity/CMakeFiles/game.dir/UGADebug.cpp.o	7c460e755130ea80
+29	1308	7817153172883737	GameActivity/CMakeFiles/game.dir/UGASoftKeyboard.cpp.o	9c23fdf12cfaf5a9
+20	1345	7817153173250542	GameActivity/CMakeFiles/game.dir/UGAInput.cpp.o	34c4bd8182c9eeef
+0	1375	7817153173544151	GameActivity/CMakeFiles/game.dir/UGAApplication.cpp.o	73ac2d0533f28c3b
+1375	1465	7817153174457226	C:/Users/User/Desktop/GameProjects/PZ_4 Blackjack/Library/Bee/Android/Prj/IL2CPP/Gradle/unityLibrary/build/intermediates/cxx/Debug/6h3d246d/obj/x86_64/libgame.so	3c62a56348e87927
